@@ -24,8 +24,6 @@ public class User {
     @Column(name = "username", nullable = false, length = 50)
     private String username;
 
-    @Column(name = "email", length = 100)
-    private String email;
 
     @Column(name = "password", nullable = false)
     private String password;
@@ -47,9 +45,8 @@ public class User {
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
-    public User(String username, String email, String password) {
+    public User(String username, String password) {
         this.username = username;
-        this.email = email;
         this.password = password;
         this.createdAt = Instant.now();
         this.updatedAt = Instant.now();

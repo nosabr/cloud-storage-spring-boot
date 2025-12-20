@@ -43,7 +43,7 @@ public class UserService implements UserDetailsService {
     public UserResponse createUser(SignupRequest request) {
         String hashedPassword = passwordEncoder.encode(request.password());
         return new UserResponse(
-                userRepository.save(new User(request.username(), request.email(), hashedPassword))
+                userRepository.save(new User(request.username(), hashedPassword))
                         .getUsername());
     }
 }
