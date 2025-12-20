@@ -1,6 +1,7 @@
 package org.example.cloudstorage1.Service;
 
 import org.example.cloudstorage1.dto.SignupRequest;
+import org.example.cloudstorage1.dto.UserResponse;
 import org.example.cloudstorage1.entity.User;
 import org.example.cloudstorage1.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -42,8 +43,10 @@ public class UserService implements UserDetailsService {
         return userRepository.findByEmail(email).isPresent();
     }
 
-    public User createUser(SignupRequest request) {
+    public UserResponse createUser(SignupRequest request) {
         String hashedPassword = passwordEncoder.encode(request.password());
-        return userRepository.save(new User(request.username(), request.email(), hashedPassword));
+        return new UserResponse(
+                userRepository.save(new User(request.username(), request.email(), hashedPassword))
+                        .getUsername());
     }
 }

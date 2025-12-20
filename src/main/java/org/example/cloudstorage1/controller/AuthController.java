@@ -2,9 +2,7 @@ package org.example.cloudstorage1.controller;
 
 import jakarta.validation.Valid;
 import org.example.cloudstorage1.Service.UserService;
-import org.example.cloudstorage1.dto.LoginRequest;
-import org.example.cloudstorage1.dto.SignupRequest;
-import org.example.cloudstorage1.entity.User;
+import org.example.cloudstorage1.dto.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -37,7 +35,7 @@ public class AuthController {
                 new UsernamePasswordAuthenticationToken(request.username(),request.password());
         Authentication authentication = authenticationManager.authenticate(authToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body(new UserResponse(authentication.getName()));
     }
 
 
@@ -46,19 +44,15 @@ public class AuthController {
         if (userService.existsByUsername(request.username())) {
             return ResponseEntity
                     .status(HttpStatus.CONFLICT)
-                    .body(Map.of("error", "Username already exists"));
+                    .body(new ErrorResponse(ErrorMessage.USERNAME_ALREADY_EXISTS));
         }
 
         if (userService.existsByEmail(request.email())) {
             return ResponseEntity
                     .status(HttpStatus.CONFLICT)
-                    .body(Map.of("error", "Email already exists"));
+                    .body(new ErrorResponse(ErrorMessage.EMAIL_ALREADY_EXISTS));
         }
-        User user = userService.createUser(request);
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(Map.of("message", "User registered successfully",
-                        "username" , user.getUsername()));
-
+        UserResponse response = userService.createUser(request);
+        return ResponseEntity.ok().body(response);
     }
 }
