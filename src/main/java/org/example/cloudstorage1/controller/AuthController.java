@@ -46,12 +46,6 @@ public class AuthController {
                     .status(HttpStatus.CONFLICT)
                     .body(new ErrorResponse(ErrorMessage.USERNAME_ALREADY_EXISTS));
         }
-
-        if (userService.existsByEmail(request.email())) {
-            return ResponseEntity
-                    .status(HttpStatus.CONFLICT)
-                    .body(new ErrorResponse(ErrorMessage.EMAIL_ALREADY_EXISTS));
-        }
         UserResponse response = userService.createUser(request);
         return ResponseEntity.ok().body(response);
     }

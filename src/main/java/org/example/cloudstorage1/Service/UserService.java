@@ -39,9 +39,6 @@ public class UserService implements UserDetailsService {
         return userRepository.findByUsername(username).isPresent();
     }
 
-    public boolean existsByEmail(String email) {
-        return userRepository.findByEmail(email).isPresent();
-    }
 
     public UserResponse createUser(SignupRequest request) {
         String hashedPassword = passwordEncoder.encode(request.password());
