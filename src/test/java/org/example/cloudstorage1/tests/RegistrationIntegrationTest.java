@@ -1,6 +1,7 @@
 package org.example.cloudstorage1.tests;
 
 import org.example.cloudstorage1.BaseIntegrationTest;
+import org.example.cloudstorage1.Service.UserService;
 import org.example.cloudstorage1.dto.ErrorResponse;
 import org.example.cloudstorage1.dto.SignupRequest;
 import org.example.cloudstorage1.dto.UserResponse;
@@ -24,6 +25,8 @@ public class RegistrationIntegrationTest extends BaseIntegrationTest {
     private TestRestTemplate testRestTemplate;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private UserService userService;
 
     @AfterEach
     void cleanup() {
@@ -40,6 +43,20 @@ public class RegistrationIntegrationTest extends BaseIntegrationTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotNull();
         assertThat(response.getBody() != null ? response.getBody().username() : null).isEqualTo("test");
+    }
+
+    @Test
+    void shouldRejectDuplicateUsername() {
+        userService.signUp(new SignupRequest("test", "test"));
+        SignupRequest request = new SignupRequest("test", "test");
+
+        ResponseEntity<ErrorResponse> response = testRestTemplate.postForEntity(
+                "/api/auth/sign-up",
+                request,
+                ErrorResponse.class
+        );
+
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CONFLICT);
     }
 
     @Test
