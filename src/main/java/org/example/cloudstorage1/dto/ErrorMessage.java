@@ -7,7 +7,8 @@ public enum ErrorMessage {
     WRONG_LOGIN_OR_PASSWORD("Неверный логин или пароль"),
     ACCOUNT_IS_DISABLED("Аккаунт заблокирован"),
     SYSTEM_ERROR("Произошла ошибка, повторите позже"),
-    INVALID_FORMAT("Неверный формат логина или пароля");
+    INVALID_FORMAT("Неверный формат логина или пароля"),
+    UNAUTHORIZED("Не авторизован");
 
     private final String message;
 

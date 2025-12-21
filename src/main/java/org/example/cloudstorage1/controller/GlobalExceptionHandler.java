@@ -29,17 +29,17 @@ public class GlobalExceptionHandler {
                 .body(new ErrorResponse(ErrorMessage.WRONG_LOGIN_OR_PASSWORD));
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<?> handleGenericException() {
-        return ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new ErrorResponse(ErrorMessage.SYSTEM_ERROR));
-    }
-
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidationException() {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(new ErrorResponse(ErrorMessage.INVALID_FORMAT));
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<?> handleGenericException() {
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(new ErrorResponse(ErrorMessage.SYSTEM_ERROR));
     }
 }
