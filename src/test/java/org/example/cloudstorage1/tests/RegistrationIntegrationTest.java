@@ -6,7 +6,7 @@ import org.example.cloudstorage1.dto.ErrorResponse;
 import org.example.cloudstorage1.dto.SignupRequest;
 import org.example.cloudstorage1.dto.UserResponse;
 import org.example.cloudstorage1.repository.UserRepository;
-import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -28,7 +28,7 @@ public class RegistrationIntegrationTest extends BaseIntegrationTest {
     @Autowired
     private UserService userService;
 
-    @AfterEach
+    @BeforeEach
     void cleanup() {
         userRepository.deleteAll();
     }
