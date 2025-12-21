@@ -22,12 +22,6 @@ public class AuthService {
                 new UsernamePasswordAuthenticationToken(request.username(), request.password());
         Authentication authentication = authenticationManager.authenticate(authToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        // Проверка
-        System.out.println("Authentication successful: " + authentication.isAuthenticated());
-        System.out.println("Username: " + authentication.getName());
-
-
         return new UserResponse(authentication.getName());
     }
 

@@ -17,7 +17,6 @@ public class UserController {
         if (authentication == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        System.out.println("AALLLOOO");
         return ResponseEntity.ok(new  UserResponse(authentication.getName()));
     }
 }
