@@ -9,5 +9,6 @@ public class CloudStorage1Application {
     public static void main(String[] args) {
 
         SpringApplication.run(CloudStorage1Application.class, args);
+        System.out.println("Hello from aitu");
     }
 }
