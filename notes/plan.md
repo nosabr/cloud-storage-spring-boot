@@ -225,7 +225,7 @@
 
 ### 4.1 Docker Compose - MinIO
 
-- [ ] Добавить сервис MinIO в `docker-compose.yml`:
+- [x] Добавить сервис MinIO в `docker-compose.yml`:
   ```yaml
   minio:
     image: minio/minio
@@ -240,7 +240,7 @@
       - minio_data:/data
   ```
 
-- [ ] Запустить и проверить доступ к консоли (http://localhost:9001)
+- [x] Запустить и проверить доступ к консоли (http://localhost:9001)
 
 ### 4.2 Интеграция MinIO SDK
 
