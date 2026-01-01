@@ -1,13 +1,12 @@
 package org.example.cloudstorage1.tests;
 
 import org.example.cloudstorage1.BaseIntegrationTest;
-import org.example.cloudstorage1.Service.UserService;
+import org.example.cloudstorage1.service.UserService;
 import org.example.cloudstorage1.dto.ErrorResponse;
 import org.example.cloudstorage1.dto.LoginRequest;
 import org.example.cloudstorage1.dto.SignupRequest;
 import org.example.cloudstorage1.dto.UserResponse;
 import org.example.cloudstorage1.repository.UserRepository;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

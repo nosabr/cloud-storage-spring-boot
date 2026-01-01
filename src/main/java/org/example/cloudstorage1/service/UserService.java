@@ -1,4 +1,4 @@
-package org.example.cloudstorage1.Service;
+package org.example.cloudstorage1.service;
 
 import org.example.cloudstorage1.dto.SignupRequest;
 import org.example.cloudstorage1.dto.UserResponse;

@@ -1,7 +1,7 @@
 package org.example.cloudstorage1.tests;
 
 import org.example.cloudstorage1.BaseIntegrationTest;
-import org.example.cloudstorage1.Service.UserService;
+import org.example.cloudstorage1.service.UserService;
 import org.example.cloudstorage1.dto.ErrorResponse;
 import org.example.cloudstorage1.dto.SignupRequest;
 import org.example.cloudstorage1.dto.UserResponse;

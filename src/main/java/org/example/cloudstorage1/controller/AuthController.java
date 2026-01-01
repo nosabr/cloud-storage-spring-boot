@@ -2,8 +2,8 @@ package org.example.cloudstorage1.controller;
 
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
-import org.example.cloudstorage1.Service.AuthService;
-import org.example.cloudstorage1.Service.UserService;
+import org.example.cloudstorage1.service.AuthService;
+import org.example.cloudstorage1.service.UserService;
 import org.example.cloudstorage1.dto.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

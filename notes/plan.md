@@ -240,7 +240,7 @@
       - minio_data:/data
   ```
 
-- [x] Запустить и проверить доступ к консоли (http://localhost:9001)
+  - [x] Запустить и проверить доступ к консоли (http://localhost:9001)
 
 ### 4.2 Интеграция MinIO SDK
 
@@ -264,7 +264,7 @@
   }
   ```
 
-- [ ] Настроить параметры в `application.yml`:
+- [x] Настроить параметры в `application.yml`:
     - minio.url
     - minio.access-key
     - minio.secret-key
