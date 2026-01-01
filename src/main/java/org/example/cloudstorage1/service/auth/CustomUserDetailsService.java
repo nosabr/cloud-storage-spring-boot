@@ -1,4 +1,4 @@
-package org.example.cloudstorage1.service;
+package org.example.cloudstorage1.service.auth;
 
 import org.example.cloudstorage1.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
