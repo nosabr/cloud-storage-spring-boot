@@ -2,7 +2,7 @@ package org.example.cloudstorage1.config;
 
 import lombok.extern.slf4j.Slf4j;
 import org.example.cloudstorage1.exception.StorageException;
-import org.example.cloudstorage1.service.storage.FileStorageService;
+import org.example.cloudstorage1.service.storage.BucketService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -12,19 +12,19 @@ import org.springframework.stereotype.Component;
 public class BucketInitializer implements CommandLineRunner {
 
     private final String bucketName;
-    private final FileStorageService fileStorageService;
+    private final BucketService bucketService;
 
     public BucketInitializer(@Value("${storage.bucket-name}") String bucketName,
-                             FileStorageService fileStorageService) {
+                             BucketService bucketService) {
         this.bucketName = bucketName;
-        this.fileStorageService = fileStorageService;
+        this.bucketService = bucketService;
     }
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) throws StorageException {
         log.info("Initializing bucket {}...", bucketName);
         try {
-            fileStorageService.createBucketIfNotExists(bucketName);
+            bucketService.createBucketIfNotExists(bucketName);
             log.info("Bucket {} initialized.", bucketName);
         } catch (StorageException e) {
             log.warn("Bucket {} initialization failed.", bucketName, e);

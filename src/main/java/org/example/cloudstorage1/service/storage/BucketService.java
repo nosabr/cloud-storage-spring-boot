@@ -2,7 +2,7 @@ package org.example.cloudstorage1.service.storage;
 
 import org.example.cloudstorage1.exception.StorageException;
 
-public interface FileStorageService {
+public interface BucketService {
 
     boolean bucketExists(String bucketName) throws StorageException;
 
