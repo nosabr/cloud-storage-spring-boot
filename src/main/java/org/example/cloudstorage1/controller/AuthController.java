@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.cloudstorage1.service.auth.AuthService;
 import org.example.cloudstorage1.service.auth.UserService;
 import org.example.cloudstorage1.dto.*;
-import org.example.cloudstorage1.service.storage.FolderService;
+import org.example.cloudstorage1.service.storage.FolderStorageService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,12 +20,12 @@ public class AuthController {
 
     private final AuthService authService;
     private final UserService userService;
-    private final FolderService folderService;
+    private final FolderStorageService folderStorageService;
 
-    public AuthController(AuthService authService, UserService userService, FolderService folderService) {
+    public AuthController(AuthService authService, UserService userService, FolderStorageService folderStorageService) {
         this.authService = authService;
         this.userService = userService;
-        this.folderService = folderService;
+        this.folderStorageService = folderStorageService;
     }
 
 
@@ -46,7 +46,8 @@ public class AuthController {
                     .body(new ErrorResponse(ErrorMessage.USERNAME_ALREADY_EXISTS));
         }
         UserResponse response = userService.signUp(request);
-        folderService.createFolder(response.username());
+        //TODO Change service here
+        folderStorageService.createFolder(response.username());
         log.info("sign-up request, User created: '{}'", response.toString());
         return ResponseEntity.ok().body(response);
     }

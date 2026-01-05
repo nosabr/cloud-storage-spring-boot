@@ -2,7 +2,6 @@ package org.example.cloudstorage1.service.storage;
 
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
-import io.minio.errors.*;
 import org.example.cloudstorage1.exception.StorageException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -11,13 +10,13 @@ import java.io.ByteArrayInputStream;
 
 
 @Service
-public class FolderServiceImp implements FolderService{
+public class FolderStorageStorageServiceImp implements FolderStorageService {
     private final MinioClient minioClient;
 
     @Value("${storage.bucket-name}")
     private String bucketName;
 
-    public FolderServiceImp(MinioClient minioClient) {
+    public FolderStorageStorageServiceImp(MinioClient minioClient) {
         this.minioClient = minioClient;
     }
 
