@@ -1,5 +1,6 @@
 package org.example.cloudstorage1.service.auth;
 
+import lombok.RequiredArgsConstructor;
 import org.example.cloudstorage1.dto.SignupRequest;
 import org.example.cloudstorage1.dto.UserResponse;
 import org.example.cloudstorage1.entity.User;
@@ -8,14 +9,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
 
     public UserResponse signUp(SignupRequest request) {
         String hashedPassword = passwordEncoder.encode(request.password());

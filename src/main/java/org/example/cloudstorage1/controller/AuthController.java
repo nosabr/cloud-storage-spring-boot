@@ -1,6 +1,7 @@
 package org.example.cloudstorage1.controller;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.cloudstorage1.service.auth.AuthService;
 import org.example.cloudstorage1.service.auth.UserService;
@@ -16,17 +17,12 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @RequestMapping("/api/auth")
+@RequiredArgsConstructor
 public class AuthController {
 
     private final AuthService authService;
     private final UserService userService;
     private final FolderStorageService folderStorageService;
-
-    public AuthController(AuthService authService, UserService userService, FolderStorageService folderStorageService) {
-        this.authService = authService;
-        this.userService = userService;
-        this.folderStorageService = folderStorageService;
-    }
 
 
     @PostMapping("/sign-in")

@@ -1,5 +1,6 @@
 package org.example.cloudstorage1.config;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.cloudstorage1.exception.StorageException;
 import org.example.cloudstorage1.service.storage.BucketService;
@@ -9,16 +10,11 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class BucketInitializer implements CommandLineRunner {
 
     private final String bucketName;
     private final BucketService bucketService;
-
-    public BucketInitializer(@Value("${storage.bucket-name}") String bucketName,
-                             BucketService bucketService) {
-        this.bucketName = bucketName;
-        this.bucketService = bucketService;
-    }
 
     @Override
     public void run(String... args) throws StorageException {

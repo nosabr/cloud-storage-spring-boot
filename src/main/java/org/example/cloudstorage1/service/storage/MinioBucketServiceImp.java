@@ -3,19 +3,17 @@ package org.example.cloudstorage1.service.storage;
 import io.minio.BucketExistsArgs;
 import io.minio.MakeBucketArgs;
 import io.minio.MinioClient;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.cloudstorage1.exception.StorageException;
 import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
-public class BucketServiceImp implements BucketService {
+@RequiredArgsConstructor
+public class MinioBucketServiceImp implements BucketService {
 
     private final MinioClient minioClient;
-
-    public BucketServiceImp(MinioClient minioClient) {
-        this.minioClient = minioClient;
-    }
 
     @Override
     public void createBucket(String bucketName) throws StorageException {
