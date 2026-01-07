@@ -25,3 +25,5 @@ VALUES (
            '$2a$10$XptfskVPRdFDhVBXLY3iZu9gNKR.X.0LlUKIkJfhMDq5FPIlMYqwK',
            'ROLE_ADMIN'
        );
+
+
