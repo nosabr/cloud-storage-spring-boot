@@ -1,4 +1,4 @@
-package org.example.cloudstorage1.service.storage;
+package org.example.cloudstorage1.service.storage.minioService;
 
 import io.minio.BucketExistsArgs;
 import io.minio.MakeBucketArgs;
@@ -6,6 +6,7 @@ import io.minio.MinioClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.cloudstorage1.exception.StorageException;
+import org.example.cloudstorage1.service.storage.BucketService;
 import org.springframework.stereotype.Service;
 
 @Service
