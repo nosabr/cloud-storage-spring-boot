@@ -13,7 +13,8 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class BucketInitializer implements CommandLineRunner {
 
-    private final String bucketName;
+    @Value("${storage.bucket-name}")
+    private String bucketName;
     private final BucketService bucketService;
 
     @Override
