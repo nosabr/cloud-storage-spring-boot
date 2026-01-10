@@ -3,6 +3,7 @@ package org.example.cloudstorage1.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.cloudstorage1.exception.UsernameAlreadyExistsException;
 import org.example.cloudstorage1.service.auth.AuthService;
 import org.example.cloudstorage1.service.auth.UserService;
 import org.example.cloudstorage1.dto.*;
@@ -26,25 +27,24 @@ public class AuthController {
 
 
     @PostMapping("/sign-in")
-    public ResponseEntity<?> signIn(@Valid @RequestBody LoginRequest request) {
-        log.info("sign-in request: '{}'", request.toString());
-        return ResponseEntity.ok().body(authService.signIn(request));
+    public ResponseEntity<UserResponse> signIn(@Valid @RequestBody LoginRequest request) {
+        log.info("sign-in request: '{}'", request.username());
+        return ResponseEntity.ok(authService.signIn(request));
     }
 
-
     @PostMapping("/sign-up")
-    public ResponseEntity<?> signup(@Valid @RequestBody SignupRequest request) {
-        log.info("sign-up request: {}", request.toString());
+    public ResponseEntity<UserResponse> signup(@Valid @RequestBody SignupRequest request) {
+        log.info("sign-up request: {}", request.username());
         if (userService.existsByUsername(request.username())) {
             log.warn("username already exists: '{}'", request.username());
-            return ResponseEntity
-                    .status(HttpStatus.CONFLICT)
-                    .body(new ErrorResponse(ErrorMessage.USERNAME_ALREADY_EXISTS));
+            throw new UsernameAlreadyExistsException(request.username());
         }
         UserResponse response = userService.signUp(request);
+
         //TODO Change service here
         folderStorageService.createFolder(response.username());
-        log.info("sign-up request, User created: '{}'", response.toString());
-        return ResponseEntity.ok().body(response);
+
+        log.info("sign-up request, User created: '{}'", response);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 }

@@ -3,6 +3,7 @@ package org.example.cloudstorage1.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.example.cloudstorage1.dto.ErrorMessage;
 import org.example.cloudstorage1.dto.ErrorResponse;
+import org.example.cloudstorage1.exception.UsernameAlreadyExistsException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -17,20 +18,13 @@ import java.util.Map;
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
     @ExceptionHandler(DisabledException.class)
-    public ResponseEntity<?> handleDisabled() {
+    public ResponseEntity<ErrorResponse> handleDisabled() {
         log.warn("DisabledException");
         return ResponseEntity
                 .status(HttpStatus.FORBIDDEN)
                 .body(new ErrorResponse(ErrorMessage.ACCOUNT_IS_DISABLED));
-    }
-
-    @ExceptionHandler(AuthenticationException.class)
-    public ResponseEntity<?> handleAuthenticationException() {
-        log.warn("AuthenticationException");
-        return ResponseEntity
-                .status(HttpStatus.UNAUTHORIZED)
-                .body(new ErrorResponse(ErrorMessage.WRONG_LOGIN_OR_PASSWORD));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -41,8 +35,24 @@ public class GlobalExceptionHandler {
                 .body(new ErrorResponse(ErrorMessage.INVALID_FORMAT));
     }
 
+    @ExceptionHandler(UsernameAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponse> handleUsernameAlreadyExistsException() {
+        log.warn("UsernameAlreadyUsedException");
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(new ErrorResponse(ErrorMessage.USERNAME_ALREADY_EXISTS));
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<ErrorResponse> handleAuthenticationException() {
+        log.warn("AuthenticationException");
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(new ErrorResponse(ErrorMessage.WRONG_LOGIN_OR_PASSWORD));
+    }
+
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<?> handleGenericException() {
+    public ResponseEntity<ErrorResponse> handleGenericException() {
         log.warn("GenericException");
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
