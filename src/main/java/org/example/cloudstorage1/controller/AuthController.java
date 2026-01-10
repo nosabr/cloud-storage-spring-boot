@@ -42,7 +42,7 @@ public class AuthController {
         UserResponse response = userService.signUp(request);
 
         //TODO Change service here
-        folderStorageService.createFolder(response.username());
+        //folderStorageService.createFolder(response.username());
 
         log.info("sign-up request, User created: '{}'", response);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);

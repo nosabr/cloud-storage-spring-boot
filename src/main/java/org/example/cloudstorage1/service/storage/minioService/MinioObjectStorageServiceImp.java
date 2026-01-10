@@ -3,13 +3,13 @@ package org.example.cloudstorage1.service.storage.minioService;
 import io.minio.MinioClient;
 import lombok.RequiredArgsConstructor;
 import org.example.cloudstorage1.exception.StorageException;
-import org.example.cloudstorage1.service.storage.FileStorageService;
+import org.example.cloudstorage1.service.storage.ObjectStorageService;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.io.InputStream;
 
 @RequiredArgsConstructor
-public class MinioFileStorageServiceImp implements FileStorageService {
+public class MinioObjectStorageServiceImp implements ObjectStorageService {
 
     private final MinioClient minioClient;
     @Value("${storage.bucket-name}")
