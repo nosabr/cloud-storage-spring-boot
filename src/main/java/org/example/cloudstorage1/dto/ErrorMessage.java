@@ -8,7 +8,9 @@ public enum ErrorMessage {
     ACCOUNT_IS_DISABLED("Аккаунт заблокирован"),
     SYSTEM_ERROR("Произошла ошибка, повторите позже"),
     INVALID_FORMAT("Неверный формат логина или пароля"),
-    UNAUTHORIZED("Не авторизован");
+    UNAUTHORIZED("Не авторизован"),
+    FOLDER_ALREADY_EXISTS("Папка уже существует"),
+    FOLDER_NOT_FOUND("Папка не существует");
 
     private final String message;
 

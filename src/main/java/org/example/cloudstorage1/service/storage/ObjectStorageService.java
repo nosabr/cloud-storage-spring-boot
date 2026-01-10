@@ -1,10 +1,13 @@
 package org.example.cloudstorage1.service.storage;
 
 import org.example.cloudstorage1.exception.StorageException;
+import org.springframework.stereotype.Component;
 
 import java.io.InputStream;
 
-public interface FileStorageService {
+
+@Component
+public interface ObjectStorageService {
     InputStream downloadFile(String objectName) throws StorageException;
     void uploadFile(String objectName, InputStream inputStream) throws StorageException;
     void deleteFile(String objectName) throws StorageException;

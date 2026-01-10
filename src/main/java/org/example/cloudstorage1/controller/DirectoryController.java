@@ -15,7 +15,7 @@ public class DirectoryController {
 
     @GetMapping
     public void getDirectory() {
-
+        // path checked through @VALID in record
     }
 
     @PostMapping
