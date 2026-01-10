@@ -3,6 +3,8 @@ package org.example.cloudstorage1.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.example.cloudstorage1.dto.ErrorMessage;
 import org.example.cloudstorage1.dto.ErrorResponse;
+import org.example.cloudstorage1.exception.FolderConflictException;
+import org.example.cloudstorage1.exception.FolderNotFoundException;
 import org.example.cloudstorage1.exception.UsernameAlreadyExistsException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +20,6 @@ import java.util.Map;
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-
     @ExceptionHandler(DisabledException.class)
     public ResponseEntity<ErrorResponse> handleDisabled() {
         log.warn("DisabledException");
@@ -35,12 +36,36 @@ public class GlobalExceptionHandler {
                 .body(new ErrorResponse(ErrorMessage.INVALID_FORMAT));
     }
 
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ErrorResponse> handleBadCredentialsException() {
+        log.warn("BadCredentialsException");
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse(ErrorMessage.INVALID_FORMAT));
+    }
+
     @ExceptionHandler(UsernameAlreadyExistsException.class)
     public ResponseEntity<ErrorResponse> handleUsernameAlreadyExistsException() {
         log.warn("UsernameAlreadyUsedException");
         return ResponseEntity
                 .status(HttpStatus.CONFLICT)
                 .body(new ErrorResponse(ErrorMessage.USERNAME_ALREADY_EXISTS));
+    }
+
+    @ExceptionHandler(FolderConflictException.class)
+    public ResponseEntity<ErrorResponse> handleFolderConflictException() {
+        log.warn("FolderConflictException");
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(new ErrorResponse(ErrorMessage.FOLDER_ALREADY_EXISTS));
+    }
+
+    @ExceptionHandler(FolderNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleFolderNotFoundException() {
+        log.warn("FolderNotFoundException");
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse(ErrorMessage.FOLDER_NOT_FOUND));
     }
 
     @ExceptionHandler(AuthenticationException.class)
