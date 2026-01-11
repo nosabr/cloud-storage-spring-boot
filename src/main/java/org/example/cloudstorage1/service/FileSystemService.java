@@ -2,6 +2,8 @@ package org.example.cloudstorage1.service;
 
 import lombok.RequiredArgsConstructor;
 import org.example.cloudstorage1.dto.ResourceResponse;
+import org.example.cloudstorage1.entity.FileNode;
+import org.example.cloudstorage1.entity.FileType;
 import org.example.cloudstorage1.entity.User;
 import org.example.cloudstorage1.exception.FolderConflictException;
 import org.example.cloudstorage1.exception.FolderNotFoundException;
@@ -15,14 +17,15 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class FileSystemService {
 
     private final ObjectStorageService objectStorageService;
+    private final UserService userService;
     private final FileNodeService fileNodeService;
-
 
     public ResourceResponse createDirectory(User user, String fullPath){
 
@@ -41,7 +44,12 @@ public class FileSystemService {
             throw new FolderConflictException("The path already exists!");
         }
 
-        return fileNodeService.createFolder(user, fullPath);// типа разделить на папки
+        return null;
+    }
+
+    public void createUserBaseFolder(User user){
+        FileNode fileNode = new FileNode(user.getUsername(), FileType.DIRECTORY, null, user.getId());
+        fileNodeService.save(fileNode);
     }
 
 }

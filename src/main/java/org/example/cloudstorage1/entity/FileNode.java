@@ -54,6 +54,11 @@ public class FileNode {
         createdAt = LocalDateTime.now();
     }
 
-
+    public FileNode(String name, FileType type, Long parentId, Long ownerId){
+        this.name = name;
+        this.type = type;
+        this.parentId = parentId;
+        this.ownerId = ownerId;
+    }
 
 }
