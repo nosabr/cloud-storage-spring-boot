@@ -8,6 +8,8 @@ import org.example.cloudstorage1.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -15,10 +17,13 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
 
-    public UserResponse signUp(SignupRequest request) {
+    public User signUp(SignupRequest request) {
         String hashedPassword = passwordEncoder.encode(request.password());
-        User user = userRepository.save(new User(request.username(), hashedPassword));
-        return new UserResponse(user.getUsername());
+        return userRepository.save(new User(request.username(), hashedPassword));
+    }
+
+    public Optional<User> getUserByUsername(String username) {
+        return userRepository.findByUsername(username);
     }
 
     public boolean existsByUsername(String username) {
