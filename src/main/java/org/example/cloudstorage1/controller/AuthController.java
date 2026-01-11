@@ -3,11 +3,13 @@ package org.example.cloudstorage1.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.cloudstorage1.entity.User;
 import org.example.cloudstorage1.exception.UsernameAlreadyExistsException;
+import org.example.cloudstorage1.service.FileNodeService;
+import org.example.cloudstorage1.service.FileSystemService;
 import org.example.cloudstorage1.service.auth.AuthService;
 import org.example.cloudstorage1.service.auth.UserService;
 import org.example.cloudstorage1.dto.*;
-import org.example.cloudstorage1.service.storage.FolderStorageService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,7 +25,8 @@ public class AuthController {
 
     private final AuthService authService;
     private final UserService userService;
-    private final FolderStorageService folderStorageService;
+    private final FileNodeService fileNodeService;
+    private final FileSystemService fileSystemService;
 
 
     @PostMapping("/sign-in")
@@ -39,11 +42,11 @@ public class AuthController {
             log.warn("username already exists: '{}'", request.username());
             throw new UsernameAlreadyExistsException(request.username());
         }
-        UserResponse response = userService.signUp(request);
 
-        //TODO Change service here
-        //folderStorageService.createFolder(response.username());
+        User user = userService.signUp(request);
+        fileSystemService.createUserBaseFolder(user);
 
+        UserResponse response = new UserResponse(user.getUsername());
         log.info("sign-up request, User created: '{}'", response);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
