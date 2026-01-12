@@ -16,6 +16,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,11 +24,9 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class FileSystemService {
 
-    private final ObjectStorageService objectStorageService;
-    private final UserService userService;
     private final FileNodeService fileNodeService;
 
-    public ResourceResponse createDirectory(User user, String fullPath){
+    public FileNode createDirectory(User user, String fullPath){
 
         String parentPath = fullPath.substring(0, fullPath.lastIndexOf("/"));
         String childPath = fullPath.substring(fullPath.lastIndexOf("/"));
@@ -46,6 +45,17 @@ public class FileSystemService {
 
         return null;
     }
+
+    public List<FileNode> getDirectoryContent(User user, String fullPath){
+        return null;
+    }
+
+    public void downloadFile(){}
+
+    public void uploadFile(){}
+
+    public void deleteFile(){}
+
 
     public void createUserBaseFolder(User user){
         FileNode fileNode = new FileNode(user.getUsername(), FileType.DIRECTORY, null, user.getId());
