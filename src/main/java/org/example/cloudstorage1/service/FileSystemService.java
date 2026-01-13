@@ -33,7 +33,7 @@ public class FileSystemService {
         String parentPath = FolderUtil.getParentPath(fullPath);
         String childPath = FolderUtil.getChildPath(fullPath);
 
-        if(PathValidator.)
+        //if(PathValidator.)
 
         if(parentPath.isEmpty()){
 
