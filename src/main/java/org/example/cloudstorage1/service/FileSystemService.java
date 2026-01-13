@@ -58,7 +58,13 @@ public class FileSystemService {
 
 
     public void createUserBaseFolder(User user){
-        FileNode fileNode = new FileNode(user.getUsername(), FileType.DIRECTORY, null, user.getId());
+        //FileNode fileNode = new FileNode(user.getUsername(), FileType.DIRECTORY, null, user.getId());
+        FileNode fileNode = FileNode.builder()
+                .name(user.getUsername())
+                .type(FileType.DIRECTORY).parentId(null)
+                .ownerId(user.getId())
+                .storageKey(null)
+                .build();
         fileNodeService.save(fileNode);
     }
 

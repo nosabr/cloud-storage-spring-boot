@@ -1,10 +1,7 @@
 package org.example.cloudstorage1.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -13,6 +10,7 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Table(name = "file_node", indexes = {
         @Index(name = "idx_parent_id", columnList = "parent_id"),
         @Index(name = "idx_owner_id", columnList = "owner_id"),
@@ -34,6 +32,9 @@ public class FileNode {
     @Column(name = "parent_id")
     private Long parentId;
 
+    @Column(nullable = false)
+    private String path;
+
     @Column(name = "owner_id",nullable = false)
     private Long ownerId;
 
@@ -52,13 +53,6 @@ public class FileNode {
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
-    }
-
-    public FileNode(String name, FileType type, Long parentId, Long ownerId){
-        this.name = name;
-        this.type = type;
-        this.parentId = parentId;
-        this.ownerId = ownerId;
     }
 
 }

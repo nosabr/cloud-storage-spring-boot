@@ -2,6 +2,7 @@
 CREATE TABLE file_node (
                            id BIGSERIAL PRIMARY KEY,
                            name VARCHAR(255) NOT NULL,
+                           path VARCHAR(255) NOT NULL,
                            type VARCHAR(10) NOT NULL CHECK (type IN ('FILE', 'FOLDER')),
                            parent_id BIGINT,
                            owner_id BIGINT NOT NULL,
