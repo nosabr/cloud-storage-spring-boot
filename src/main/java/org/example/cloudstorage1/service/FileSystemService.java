@@ -10,11 +10,13 @@ import org.example.cloudstorage1.exception.FolderNotFoundException;
 import org.example.cloudstorage1.repository.FileMetadataRepository;
 import org.example.cloudstorage1.service.auth.UserService;
 import org.example.cloudstorage1.service.storage.ObjectStorageService;
+import org.example.cloudstorage1.util.FolderUtil;
 import org.example.cloudstorage1.util.PathValidator;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -28,11 +30,13 @@ public class FileSystemService {
 
     public FileNode createDirectory(User user, String fullPath){
 
-        String parentPath = fullPath.substring(0, fullPath.lastIndexOf("/"));
-        String childPath = fullPath.substring(fullPath.lastIndexOf("/"));
+        String parentPath = FolderUtil.getParentPath(fullPath);
+        String childPath = FolderUtil.getChildPath(fullPath);
 
-        if(!PathValidator.isPathValid(fullPath)){ // checking that path is valid hz nuzhno li
-            throw new BadCredentialsException("Invalid path");
+        if(PathValidator.)
+
+        if(parentPath.isEmpty()){
+
         }
 
         if(!fileNodeService.isPathExists(user, parentPath)){
@@ -58,10 +62,11 @@ public class FileSystemService {
 
 
     public void createUserBaseFolder(User user){
-        //FileNode fileNode = new FileNode(user.getUsername(), FileType.DIRECTORY, null, user.getId());
         FileNode fileNode = FileNode.builder()
                 .name(user.getUsername())
-                .type(FileType.DIRECTORY).parentId(null)
+                .path("/")
+                .type(FileType.DIRECTORY)
+                .parentId(null)
                 .ownerId(user.getId())
                 .storageKey(null)
                 .build();

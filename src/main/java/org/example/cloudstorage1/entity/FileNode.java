@@ -2,7 +2,11 @@ package org.example.cloudstorage1.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Entity
@@ -14,7 +18,8 @@ import java.time.LocalDateTime;
 @Table(name = "file_node", indexes = {
         @Index(name = "idx_parent_id", columnList = "parent_id"),
         @Index(name = "idx_owner_id", columnList = "owner_id"),
-        @Index(name = "idx_owner_parent", columnList = "owner_id, parent_id") // составной
+        @Index(name = "idx_owner_parent", columnList = "owner_id, parent_id"),
+        @Index(name = "idx_path_owner", columnList = "path, owner_id", unique = true)// составной
 })
 public class FileNode {
     @Id
@@ -44,15 +49,13 @@ public class FileNode {
     @Column
     private Long size;
 
+    @CreationTimestamp
     @Column(name = "created_at",nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 
+    @UpdateTimestamp
     @Column(name = "updated_at",nullable = false, updatable = true)
-    private LocalDateTime updatedAt;
+    private Instant updatedAt;
 
-    @PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now();
-    }
 
 }

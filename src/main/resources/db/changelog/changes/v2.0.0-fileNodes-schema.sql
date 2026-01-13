@@ -3,14 +3,14 @@ CREATE TABLE file_node (
                            id BIGSERIAL PRIMARY KEY,
                            name VARCHAR(255) NOT NULL,
                            path VARCHAR(255) NOT NULL,
-                           type VARCHAR(10) NOT NULL CHECK (type IN ('FILE', 'FOLDER')),
+                           type VARCHAR(10) NOT NULL CHECK (type IN ('FILE', 'DIRECTORY')),
                            parent_id BIGINT,
                            owner_id BIGINT NOT NULL,
                            storage_key VARCHAR(500),
                            size BIGINT,
                            mime_type VARCHAR(255),
-                           created_at TIMESTAMP NOT NULL,
-                           updated_at TIMESTAMP NOT NULL,
+                           created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                           updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
                            CONSTRAINT fk_file_node_parent
                                FOREIGN KEY (parent_id)
