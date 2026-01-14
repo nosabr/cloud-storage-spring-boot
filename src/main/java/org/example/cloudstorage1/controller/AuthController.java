@@ -44,7 +44,6 @@ public class AuthController {
         }
 
         User user = userService.signUp(request);
-        fileSystemService.createUserBaseFolder(user);
 
         UserResponse response = new UserResponse(user.getUsername());
         log.info("sign-up request, User created: '{}'", response);

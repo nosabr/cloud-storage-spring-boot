@@ -3,6 +3,7 @@ package org.example.cloudstorage1.controller;
 import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.cloudstorage1.entity.FileNode;
 import org.example.cloudstorage1.entity.User;
 import org.example.cloudstorage1.service.FileSystemService;
 import org.example.cloudstorage1.service.auth.UserService;
@@ -30,7 +31,7 @@ public class DirectoryController {
                                    Principal principal) {
         Optional<User> userOpt = userService.getUserByUsername(principal.getName());
         if(userOpt.isPresent()){
-            fileSystemService.createDirectory(userOpt.get(), path);
+            FileNode fileNode = fileSystemService.createDirectory(userOpt.get(), path);
         }
     }
 }
