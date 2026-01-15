@@ -47,22 +47,24 @@ public class DirectoryService {
 
 
     public List<FileNode> getDirectoryContent(User user, String fullPath) {
-        Optional<FileNode> fileNodeOptional = fileNodeService.findByOwnerIdAndPath(user.getId(), fullPath);
-        if(fileNodeOptional.isEmpty()){
-            throw new FolderNotFoundException("Folder Not Found");
+
+        if(fullPath == null || fullPath.isEmpty()){
+            return fileNodeService.findAllByOwnerIdAndParentId(user.getId(), null);
         }
+
+        FileNode folder = fileMetadataRepository.findByOwnerIdAndPath(user.getId(), fullPath)
+                .orElseThrow(() -> new FolderNotFoundException("Folder not found" + fullPath));
+
+        return fileMetadataRepository.findAllByOwnerIdAndParentId(user.getId(), folder.getId());
     }
 
     private Long getParentId(Long userId, String parentPath) {
         if (parentPath.isEmpty()) {
             return null;
         }
-        Optional<FileNode> fileNodeOptional = fileMetadataRepository
-                .findByOwnerIdAndPath(userId, parentPath);
-        if (fileNodeOptional.isPresent()) {
-            return fileNodeOptional.get().getId();
-        }
-        throw new FolderNotFoundException("The path does not exist!");
-    }
+        return fileMetadataRepository.findByOwnerIdAndPath(userId, parentPath)
+                .map(FileNode :: getId)
+                .orElseThrow(() -> new FolderNotFoundException("Folder not found " + parentPath));
 
+    }
 }

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.cloudstorage1.dto.SignupRequest;
 import org.example.cloudstorage1.dto.UserResponse;
 import org.example.cloudstorage1.entity.User;
+import org.example.cloudstorage1.exception.UserNotFoundException;
 import org.example.cloudstorage1.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -22,8 +23,12 @@ public class UserService {
         return userRepository.save(new User(request.username(), hashedPassword));
     }
 
-    public Optional<User> getUserByUsername(String username) {
-        return userRepository.findByUsername(username);
+    public User getUserByUsername(String username) {
+        Optional<User> userOpt = userRepository.findByUsername(username);
+        if(userOpt.isEmpty()){
+            throw new UserNotFoundException("User not found");
+        }
+        return userOpt.get();
     }
 
     public boolean existsByUsername(String username) {

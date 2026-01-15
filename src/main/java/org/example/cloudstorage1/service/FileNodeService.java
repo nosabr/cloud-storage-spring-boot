@@ -10,10 +10,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
+import java.util.List;
 import java.util.Optional;
 
 @Service
-@Transactional
 @Slf4j
 @RequiredArgsConstructor
 public class FileNodeService {
@@ -25,11 +25,15 @@ public class FileNodeService {
     }
 
     public boolean isPathExists(Long userId, String path) {
-        Optional<FileNode> fileNodeOpt = fileMetadataRepository.findByOwnerIdAndPath(userId, path);
-        return fileNodeOpt.isPresent();
+        return findByOwnerIdAndPath(userId,path).isPresent();
     }
 
     public Optional<FileNode> findByOwnerIdAndPath(Long userId, String path) {
         return fileMetadataRepository.findByOwnerIdAndPath(userId, path);
     }
+
+    public List<FileNode> findAllByOwnerIdAndParentId(Long userId, Long parentId){
+        return fileMetadataRepository.findAllByOwnerIdAndParentId(userId, parentId);
+    }
+
 }
