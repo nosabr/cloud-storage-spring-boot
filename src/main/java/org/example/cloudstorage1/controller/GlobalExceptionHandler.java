@@ -1,10 +1,12 @@
 package org.example.cloudstorage1.controller;
 
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.example.cloudstorage1.dto.ErrorMessage;
 import org.example.cloudstorage1.dto.ErrorResponse;
 import org.example.cloudstorage1.exception.FolderConflictException;
 import org.example.cloudstorage1.exception.FolderNotFoundException;
+import org.example.cloudstorage1.exception.InvalidFolderNameException;
 import org.example.cloudstorage1.exception.UsernameAlreadyExistsException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +16,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
 
 import java.util.Map;
 
@@ -68,6 +71,22 @@ public class GlobalExceptionHandler {
                 .body(new ErrorResponse(ErrorMessage.FOLDER_NOT_FOUND));
     }
 
+    @ExceptionHandler(InvalidFolderNameException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidFolderNameException() {
+        log.warn("InvalidFolderNameException");
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse(ErrorMessage.INVALID_FOLDER_NAME));
+    }
+
+    @ExceptionHandler(HandlerMethodValidationException.class)
+    public ResponseEntity<ErrorResponse> handleHandlerMethodValidationException() {
+        log.warn("HandlerMethodValidationException");
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse(ErrorMessage.BAD_REQUEST));
+    }
+
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<ErrorResponse> handleAuthenticationException() {
         log.warn("AuthenticationException");
@@ -77,8 +96,8 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleGenericException() {
-        log.warn("GenericException");
+    public ResponseEntity<ErrorResponse> handleGenericException(Exception e) {
+        log.error("GenericException {}", e.getClass().getName(), e);
         return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new ErrorResponse(ErrorMessage.SYSTEM_ERROR));

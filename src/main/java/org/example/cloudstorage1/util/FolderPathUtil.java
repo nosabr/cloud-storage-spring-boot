@@ -1,11 +1,7 @@
 package org.example.cloudstorage1.util;
 
 
-
-import java.util.Set;
-import java.util.regex.Pattern;
-
-public abstract class FolderUtil {
+public abstract class FolderPathUtil {
 
     public static String getParentPath(String fullPath){
         // Убираем последний слэш для корректной работы lastIndexOf

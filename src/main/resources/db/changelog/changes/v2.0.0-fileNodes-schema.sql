@@ -24,7 +24,7 @@ CREATE TABLE file_node (
 );
 
 --changeset sabr:003-create-file-node-indexes
-CREATE INDEX idx_parent_id ON file_node(parent_id);
+CREATE INDEX idx_parent_id ON file_no   de(parent_id);
 CREATE INDEX idx_owner_id ON file_node(owner_id);
 CREATE INDEX idx_owner_parent ON file_node(owner_id, parent_id);
 

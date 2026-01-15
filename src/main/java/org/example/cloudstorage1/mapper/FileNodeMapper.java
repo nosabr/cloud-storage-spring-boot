@@ -2,6 +2,7 @@ package org.example.cloudstorage1.mapper;
 
 import org.example.cloudstorage1.dto.ResourceResponse;
 import org.example.cloudstorage1.entity.FileNode;
+import org.example.cloudstorage1.util.FolderPathUtil;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.List;
 public class FileNodeMapper {
     public ResourceResponse toResponse(FileNode fileNode){
         return new ResourceResponse(
-                fileNode.getPath(),
+                FolderPathUtil.getParentPath(fileNode.getPath()),
                 fileNode.getName(),
                 fileNode.getSize(),
                 fileNode.getType()

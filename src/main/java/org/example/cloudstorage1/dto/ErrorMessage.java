@@ -10,7 +10,9 @@ public enum ErrorMessage {
     INVALID_FORMAT("Неверный формат логина или пароля"),
     UNAUTHORIZED("Не авторизован"),
     FOLDER_ALREADY_EXISTS("Папка уже существует"),
-    FOLDER_NOT_FOUND("Папка не существует");
+    FOLDER_NOT_FOUND("Папка не существует"),
+    BAD_REQUEST("Плохой реквест епта"),
+    INVALID_FOLDER_NAME("Некорректная имя папки");
 
     private final String message;
 
