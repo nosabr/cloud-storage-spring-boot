@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.cloudstorage1.entity.User;
 import org.example.cloudstorage1.exception.UsernameAlreadyExistsException;
 import org.example.cloudstorage1.service.FileNodeService;
-import org.example.cloudstorage1.service.FileSystemService;
+import org.example.cloudstorage1.service.DirectoryService;
 import org.example.cloudstorage1.service.auth.AuthService;
 import org.example.cloudstorage1.service.auth.UserService;
 import org.example.cloudstorage1.dto.*;
@@ -26,7 +26,7 @@ public class AuthController {
     private final AuthService authService;
     private final UserService userService;
     private final FileNodeService fileNodeService;
-    private final FileSystemService fileSystemService;
+    private final DirectoryService directoryService;
 
 
     @PostMapping("/sign-in")

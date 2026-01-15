@@ -1,9 +1,11 @@
 package org.example.cloudstorage1.dto;
 
+import org.example.cloudstorage1.entity.FileType;
+
 public record ResourceResponse (
         String path,
         String name,
-        double size,
-        ResourceType type
+        Long size,
+        FileType type
 ) {
 }
