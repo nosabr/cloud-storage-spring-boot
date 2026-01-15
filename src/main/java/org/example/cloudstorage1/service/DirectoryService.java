@@ -16,10 +16,10 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class FileSystemService {
+public class DirectoryService {
 
     private final FileNodeService fileNodeService;
-    private final FileMetadataRepository  fileMetadataRepository;
+    private final FileMetadataRepository fileMetadataRepository;
 
     public FileNode createDirectory(User user, String fullPath) {
 
@@ -45,30 +45,24 @@ public class FileSystemService {
         return fileMetadataRepository.save(fileNode);
     }
 
+
+    public List<FileNode> getDirectoryContent(User user, String fullPath) {
+        Optional<FileNode> fileNodeOptional = fileNodeService.findByOwnerIdAndPath(user.getId(), fullPath);
+        if(fileNodeOptional.isEmpty()){
+            throw new FolderNotFoundException("Folder Not Found");
+        }
+    }
+
     private Long getParentId(Long userId, String parentPath) {
         if (parentPath.isEmpty()) {
             return null;
         }
         Optional<FileNode> fileNodeOptional = fileMetadataRepository
                 .findByOwnerIdAndPath(userId, parentPath);
-        if(fileNodeOptional.isPresent()) {
+        if (fileNodeOptional.isPresent()) {
             return fileNodeOptional.get().getId();
         }
         throw new FolderNotFoundException("The path does not exist!");
     }
-
-    public List<FileNode> getDirectoryContent(User user, String fullPath) {
-        return null;
-    }
-
-    public void downloadFile() {
-    }
-
-    public void uploadFile() {
-    }
-
-    public void deleteFile() {
-    }
-
 
 }
