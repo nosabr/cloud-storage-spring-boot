@@ -36,6 +36,7 @@ public class DirectoryController {
     public ResponseEntity<List<ResourceResponse>> getDirectory(
             @RequestParam(defaultValue = "") String path, Principal principal
     ) {
+        log.info("Get directory " + path + "by user: " + principal.getName() );
         User user = userService.getUserByUsername(principal.getName());
         List<FileNode> fileNodeList = directoryService.getDirectoryContent(user, path);
         return ResponseEntity.ok(fileNodeMapper.toResponseList(fileNodeList));
@@ -45,7 +46,7 @@ public class DirectoryController {
     public ResponseEntity<ResourceResponse> createNewDirectory(
             @RequestParam @Pattern(regexp = ".+/") String path,
             Principal principal) {
-
+        log.info("Create new directory " + path + "by user: " + principal.getName() );
         User user = userService.getUserByUsername(principal.getName());
         FileNode fileNode = directoryService.createDirectory(user, path);
         ResourceResponse response = fileNodeMapper.toResponse(fileNode);
