@@ -7,11 +7,14 @@ import org.example.cloudstorage1.entity.FileNode;
 import org.example.cloudstorage1.entity.User;
 import org.example.cloudstorage1.mapper.FileNodeMapper;
 import org.example.cloudstorage1.service.FileNodeService;
+import org.example.cloudstorage1.service.UploadService;
 import org.example.cloudstorage1.service.auth.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
+import java.util.List;
 
 @RestController
 @Slf4j
@@ -21,6 +24,7 @@ public class ResourceController {
     private final FileNodeService fileNodeService;
     private final UserService userService;
     private final FileNodeMapper fileNodeMapper;
+    private final UploadService uploadService;
 
     @GetMapping
     public ResponseEntity<ResourceResponse> getResourceData(
@@ -34,7 +38,14 @@ public class ResourceController {
     public void deleteResource(){}
 
     @PostMapping
-    public void uploadResource(){}
+    public ResponseEntity<List<ResourceResponse>> uploadResource(
+            @RequestParam String path, List<MultipartFile> files,
+            Principal principal
+    ){
+        User user = userService.getUserByUsername(principal.getName());
+        List<FileNode> fileNodes = uploadService.upload(path, files, user);
+        return ResponseEntity.ok(fileNodeMapper.toResponseList(fileNodes));
+    }
 
     @GetMapping("/download")
     public void downloadResource(){}
