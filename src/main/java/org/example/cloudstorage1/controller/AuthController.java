@@ -3,13 +3,13 @@ package org.example.cloudstorage1.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.cloudstorage1.dto.LoginRequest;
+import org.example.cloudstorage1.dto.SignupRequest;
+import org.example.cloudstorage1.dto.UserResponse;
 import org.example.cloudstorage1.entity.User;
 import org.example.cloudstorage1.exception.UsernameAlreadyExistsException;
-import org.example.cloudstorage1.service.FileNodeService;
-import org.example.cloudstorage1.service.DirectoryService;
 import org.example.cloudstorage1.service.auth.AuthService;
 import org.example.cloudstorage1.service.auth.UserService;
-import org.example.cloudstorage1.dto.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,8 +25,6 @@ public class AuthController {
 
     private final AuthService authService;
     private final UserService userService;
-    private final FileNodeService fileNodeService;
-    private final DirectoryService directoryService;
 
 
     @PostMapping("/sign-in")

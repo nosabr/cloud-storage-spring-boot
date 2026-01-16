@@ -19,7 +19,6 @@ import java.util.List;
 @Slf4j
 public class DirectoryService {
 
-    private final FileNodeService fileNodeService;
     private final FileMetadataRepository fileMetadataRepository;
 
     public FileNode createDirectory(User user, String fullPath) {
@@ -28,7 +27,7 @@ public class DirectoryService {
         String folderName = FolderPathUtil.getFolderName(fullPath);
         FolderNameValidationUtil.validateFolderName(folderName);
 
-        if (fileNodeService.isPathExists(user.getId(), fullPath)) {
+        if (fileMetadataRepository.findByOwnerIdAndPath(user.getId(), fullPath).isPresent()) {
             log.warn("Folder already exists for user: {}", fullPath);
             throw new FolderConflictException("The path already exists!");
         }
@@ -49,7 +48,7 @@ public class DirectoryService {
     public List<FileNode> getDirectoryContent(User user, String fullPath) {
 
         if(fullPath == null || fullPath.isEmpty()){
-            return fileNodeService.findAllByOwnerIdAndParentId(user.getId(), null);
+            return fileMetadataRepository.findAllByOwnerIdAndParentId(user.getId(), null);
         }
 
         FileNode folder = fileMetadataRepository.findByOwnerIdAndPath(user.getId(), fullPath)
