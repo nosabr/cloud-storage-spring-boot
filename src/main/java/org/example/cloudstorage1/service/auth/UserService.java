@@ -24,11 +24,8 @@ public class UserService {
     }
 
     public User getUserByUsername(String username) {
-        Optional<User> userOpt = userRepository.findByUsername(username);
-        if(userOpt.isEmpty()){
-            throw new UserNotFoundException("User not found");
-        }
-        return userOpt.get();
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException("User not Found + " + username));
     }
 
     public boolean existsByUsername(String username) {
