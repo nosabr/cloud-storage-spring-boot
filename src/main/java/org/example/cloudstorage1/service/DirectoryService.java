@@ -6,7 +6,7 @@ import org.example.cloudstorage1.entity.FileNode;
 import org.example.cloudstorage1.entity.FileType;
 import org.example.cloudstorage1.entity.User;
 import org.example.cloudstorage1.exception.FolderConflictException;
-import org.example.cloudstorage1.exception.FolderNotFoundException;
+import org.example.cloudstorage1.exception.ResourceNotFoundException;
 import org.example.cloudstorage1.repository.FileMetadataRepository;
 import org.example.cloudstorage1.util.FolderNameValidationUtil;
 import org.example.cloudstorage1.util.FolderPathUtil;
@@ -52,7 +52,7 @@ public class DirectoryService {
         }
 
         FileNode folder = fileMetadataRepository.findByOwnerIdAndPath(user.getId(), fullPath)
-                .orElseThrow(() -> new FolderNotFoundException("Folder not found" + fullPath));
+                .orElseThrow(() -> new ResourceNotFoundException("Folder not found" + fullPath));
 
         return fileMetadataRepository.findAllByOwnerIdAndParentId(user.getId(), folder.getId());
     }
@@ -63,7 +63,7 @@ public class DirectoryService {
         }
         return fileMetadataRepository.findByOwnerIdAndPath(userId, parentPath)
                 .map(FileNode :: getId)
-                .orElseThrow(() -> new FolderNotFoundException("Folder not found " + parentPath));
+                .orElseThrow(() -> new ResourceNotFoundException("Folder not found " + parentPath));
 
     }
 }

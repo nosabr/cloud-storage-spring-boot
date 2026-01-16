@@ -1,11 +1,10 @@
 package org.example.cloudstorage1.controller;
 
-import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.example.cloudstorage1.dto.ErrorMessage;
 import org.example.cloudstorage1.dto.ErrorResponse;
 import org.example.cloudstorage1.exception.FolderConflictException;
-import org.example.cloudstorage1.exception.FolderNotFoundException;
+import org.example.cloudstorage1.exception.ResourceNotFoundException;
 import org.example.cloudstorage1.exception.InvalidFolderNameException;
 import org.example.cloudstorage1.exception.UsernameAlreadyExistsException;
 import org.springframework.http.HttpStatus;
@@ -17,8 +16,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
-
-import java.util.Map;
 
 @Slf4j
 @RestControllerAdvice
@@ -63,7 +60,7 @@ public class GlobalExceptionHandler {
                 .body(new ErrorResponse(ErrorMessage.FOLDER_ALREADY_EXISTS));
     }
 
-    @ExceptionHandler(FolderNotFoundException.class)
+    @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleFolderNotFoundException() {
         log.warn("FolderNotFoundException");
         return ResponseEntity
