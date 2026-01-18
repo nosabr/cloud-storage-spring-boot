@@ -1,12 +1,17 @@
 package org.example.cloudstorage1.service.storage.minioService;
 
 import io.minio.MinioClient;
+import io.minio.PutObjectArgs;
+import io.minio.errors.*;
 import lombok.RequiredArgsConstructor;
 import org.example.cloudstorage1.exception.StorageException;
 import org.example.cloudstorage1.service.storage.ObjectStorageService;
 import org.springframework.beans.factory.annotation.Value;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 
 @RequiredArgsConstructor
 public class MinioObjectStorageServiceImp implements ObjectStorageService {
@@ -22,8 +27,16 @@ public class MinioObjectStorageServiceImp implements ObjectStorageService {
     }
 
     @Override
-    public void uploadFile(String objectName, InputStream inputStream) throws StorageException {
-
+    public void uploadFile(String objectName, InputStream inputStream, Long size) throws StorageException {
+        try {
+            minioClient.putObject(
+                    PutObjectArgs.builder().bucket(bucketName).object(objectName).stream(
+                                    inputStream, size, -1)
+                            .contentType("application/octet-stream")
+                            .build());
+        } catch (Exception e) {
+            throw new StorageException("Storage exception ", e);
+        }
     }
 
     @Override

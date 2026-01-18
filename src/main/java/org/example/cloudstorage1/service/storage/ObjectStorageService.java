@@ -9,7 +9,7 @@ import java.io.InputStream;
 @Service
 public interface ObjectStorageService {
     InputStream downloadFile(String objectName) throws StorageException;
-    void uploadFile(String objectName, InputStream inputStream) throws StorageException;
+    void uploadFile(String objectName, InputStream inputStream, Long size) throws StorageException;
     void deleteFile(String objectName) throws StorageException;
     void moveFile(String srcObjectName, String destObjectName) throws StorageException;
     void renameFile(String srcObjectName, String newObjectName) throws StorageException;
