@@ -1,5 +1,6 @@
 package org.example.cloudstorage1.controller;
 
+import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.cloudstorage1.dto.ResourceResponse;
@@ -13,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
 
@@ -39,11 +41,12 @@ public class ResourceController {
 
     @PostMapping
     public ResponseEntity<List<ResourceResponse>> uploadResource(
-            @RequestParam String path, List<MultipartFile> files,
+            @RequestParam @Pattern(regexp = ".+/") String path, List<MultipartFile> files,
             Principal principal
-    ){
+    ) throws IOException {
         User user = userService.getUserByUsername(principal.getName());
-        List<FileNode> fileNodes = uploadService.upload(path, files, user);
+        FileNode parentFileNode = fileNodeService.getResource(user, path);
+        List<FileNode> fileNodes = uploadService.upload(parentFileNode, files, user);
         return ResponseEntity.ok(fileNodeMapper.toResponseList(fileNodes));
     }
 
