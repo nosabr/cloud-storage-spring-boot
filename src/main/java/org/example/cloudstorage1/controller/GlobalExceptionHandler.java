@@ -3,9 +3,9 @@ package org.example.cloudstorage1.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.example.cloudstorage1.dto.ErrorMessage;
 import org.example.cloudstorage1.dto.ErrorResponse;
-import org.example.cloudstorage1.exception.FolderConflictException;
+import org.example.cloudstorage1.exception.ResourceConflictException;
 import org.example.cloudstorage1.exception.ResourceNotFoundException;
-import org.example.cloudstorage1.exception.InvalidFolderNameException;
+import org.example.cloudstorage1.exception.InvalidResourceNameException;
 import org.example.cloudstorage1.exception.UsernameAlreadyExistsException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -52,9 +52,9 @@ public class GlobalExceptionHandler {
                 .body(new ErrorResponse(ErrorMessage.USERNAME_ALREADY_EXISTS));
     }
 
-    @ExceptionHandler(FolderConflictException.class)
+    @ExceptionHandler(ResourceConflictException.class)
     public ResponseEntity<ErrorResponse> handleFolderConflictException() {
-        log.warn("FolderConflictException");
+        log.warn("ResourceConflictException");
         return ResponseEntity
                 .status(HttpStatus.CONFLICT)
                 .body(new ErrorResponse(ErrorMessage.FOLDER_ALREADY_EXISTS));
@@ -68,9 +68,9 @@ public class GlobalExceptionHandler {
                 .body(new ErrorResponse(ErrorMessage.FOLDER_NOT_FOUND));
     }
 
-    @ExceptionHandler(InvalidFolderNameException.class)
+    @ExceptionHandler(InvalidResourceNameException.class)
     public ResponseEntity<ErrorResponse> handleInvalidFolderNameException() {
-        log.warn("InvalidFolderNameException");
+        log.warn("InvalidResourceNameException");
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(new ErrorResponse(ErrorMessage.INVALID_FOLDER_NAME));
