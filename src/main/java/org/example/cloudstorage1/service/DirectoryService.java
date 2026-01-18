@@ -5,10 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.cloudstorage1.entity.FileNode;
 import org.example.cloudstorage1.entity.FileType;
 import org.example.cloudstorage1.entity.User;
-import org.example.cloudstorage1.exception.FolderConflictException;
+import org.example.cloudstorage1.exception.ResourceConflictException;
 import org.example.cloudstorage1.exception.ResourceNotFoundException;
 import org.example.cloudstorage1.repository.FileMetadataRepository;
-import org.example.cloudstorage1.util.FolderNameValidationUtil;
+import org.example.cloudstorage1.util.FolderValidationUtil;
 import org.example.cloudstorage1.util.FolderPathUtil;
 import org.springframework.stereotype.Service;
 
@@ -24,10 +24,10 @@ public class DirectoryService {
     public FileNode createDirectory(User user, String fullPath) {
         String parentPath = FolderPathUtil.getParentPath(fullPath);
         String folderName = FolderPathUtil.getFolderName(fullPath);
-        FolderNameValidationUtil.validateFolderName(folderName);
+        FolderValidationUtil.validateFolderName(folderName);
         if (fileMetadataRepository.findByOwnerIdAndPath(user.getId(), fullPath).isPresent()) {
             log.warn("Folder already exists for user: {}", fullPath);
-            throw new FolderConflictException("The path already exists!");
+            throw new ResourceConflictException("The path already exists!");
         }
         Long parentId = getParentId(user.getId(), parentPath);
 

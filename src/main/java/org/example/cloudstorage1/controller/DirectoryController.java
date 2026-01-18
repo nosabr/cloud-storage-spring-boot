@@ -36,7 +36,7 @@ public class DirectoryController {
     public ResponseEntity<List<ResourceResponse>> getDirectory(
             @RequestParam(defaultValue = "") String path, Principal principal
     ) {
-        log.info("Get directory " + path + "by user: " + principal.getName() );
+        log.info("Get directory {}by user: {}", path, principal.getName());
         User user = userService.getUserByUsername(principal.getName());
         List<FileNode> fileNodeList = directoryService.getDirectoryContent(user, path);
         return ResponseEntity.ok(fileNodeMapper.toResponseList(fileNodeList));
