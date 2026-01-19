@@ -10,7 +10,7 @@ import org.example.cloudstorage1.entity.User;
 import org.example.cloudstorage1.exception.ResourceConflictException;
 import org.example.cloudstorage1.exception.ResourceNotFoundException;
 import org.example.cloudstorage1.exception.StorageException;
-import org.example.cloudstorage1.repository.FileMetadataRepository;
+import org.example.cloudstorage1.repository.FileNodeRepository;
 import org.example.cloudstorage1.service.DirectoryService;
 import org.example.cloudstorage1.service.storage.ObjectStorageService;
 import org.example.cloudstorage1.util.ResourceUtil;
@@ -28,7 +28,7 @@ import java.util.UUID;
 @Slf4j
 @RequiredArgsConstructor
 public class UploadService {
-    private final FileMetadataRepository fileMetadataRepository;
+    private final FileNodeRepository fileNodeRepository;
     private final DirectoryService directoryService;
     private final ObjectStorageService objectStorageService;
 
@@ -55,7 +55,7 @@ public class UploadService {
     private void checkForConflict(FileNode parentFileNode, List<MultipartFile> files, User user) {
         for (MultipartFile file : files) {
             String fullPath = parentFileNode.getPath() + file.getOriginalFilename();
-            fileMetadataRepository.findByOwnerIdAndPath(user.getId(), fullPath)
+            fileNodeRepository.findByOwnerIdAndPath(user.getId(), fullPath)
                     .ifPresent(existingFile -> {
                         throw new ResourceConflictException("Resource conflict" + fullPath);
                     });
@@ -110,7 +110,7 @@ public class UploadService {
         List<FileNode> addedFileNodes = new ArrayList<>();
         for (ParsedFile parsedFile : parsedFiles) {
             FileNode fileNode = createFileNode(parentFileNode, parsedFile, user);
-            addedFileNodes.add(fileMetadataRepository.save(fileNode));
+            addedFileNodes.add(fileNodeRepository.save(fileNode));
         }
         return addedFileNodes;
     }
@@ -133,7 +133,7 @@ public class UploadService {
             return parentFileNode.getId();
         } else {
             String path = parentFileNode.getPath() + parsedFile.path();
-            FileNode newParentFileNode = fileMetadataRepository.findByOwnerIdAndPath(user.getId(), path)
+            FileNode newParentFileNode = fileNodeRepository.findByOwnerIdAndPath(user.getId(), path)
                     .orElseThrow(() -> new ResourceNotFoundException("Resource not found " + path));
             return newParentFileNode.getId();
         }

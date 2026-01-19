@@ -7,7 +7,7 @@ import org.example.cloudstorage1.entity.FileType;
 import org.example.cloudstorage1.entity.User;
 import org.example.cloudstorage1.exception.ResourceConflictException;
 import org.example.cloudstorage1.exception.ResourceNotFoundException;
-import org.example.cloudstorage1.repository.FileMetadataRepository;
+import org.example.cloudstorage1.repository.FileNodeRepository;
 import org.example.cloudstorage1.util.FolderValidationUtil;
 import org.example.cloudstorage1.util.FolderPathUtil;
 import org.springframework.stereotype.Service;
@@ -19,13 +19,13 @@ import java.util.List;
 @Slf4j
 public class DirectoryService {
 
-    private final FileMetadataRepository fileMetadataRepository;
+    private final FileNodeRepository fileNodeRepository;
 
     public FileNode createDirectory(User user, String fullPath) {
         String parentPath = FolderPathUtil.getParentPath(fullPath);
         String folderName = FolderPathUtil.getFolderName(fullPath);
         FolderValidationUtil.validateFolderName(folderName);
-        if (fileMetadataRepository.findByOwnerIdAndPath(user.getId(), fullPath).isPresent()) {
+        if (fileNodeRepository.findByOwnerIdAndPath(user.getId(), fullPath).isPresent()) {
             log.warn("Folder already exists for user: {}", fullPath);
             throw new ResourceConflictException("The path already exists!");
         }
@@ -39,23 +39,23 @@ public class DirectoryService {
                 .ownerId(user.getId())
                 .build();
         log.info("Created repository" + fileNode);
-        return fileMetadataRepository.save(fileNode);
+        return fileNodeRepository.save(fileNode);
     }
 
     public List<FileNode> getDirectoryContent(User user, String fullPath) {
         if(fullPath == null || fullPath.isEmpty()){
-            return fileMetadataRepository.findAllByOwnerIdAndParentId(user.getId(), null);
+            return fileNodeRepository.findAllByOwnerIdAndParentId(user.getId(), null);
         }
-        FileNode folder = fileMetadataRepository.findByOwnerIdAndPath(user.getId(), fullPath)
+        FileNode folder = fileNodeRepository.findByOwnerIdAndPath(user.getId(), fullPath)
                 .orElseThrow(() -> new ResourceNotFoundException("Folder not found" + fullPath));
-        return fileMetadataRepository.findAllByOwnerIdAndParentId(user.getId(), folder.getId());
+        return fileNodeRepository.findAllByOwnerIdAndParentId(user.getId(), folder.getId());
     }
 
     private Long getParentId(Long userId, String parentPath) {
         if (parentPath.isEmpty()) {
             return null;
         }
-        return fileMetadataRepository.findByOwnerIdAndPath(userId, parentPath)
+        return fileNodeRepository.findByOwnerIdAndPath(userId, parentPath)
                 .map(FileNode :: getId)
                 .orElseThrow(() -> new ResourceNotFoundException("Folder not found " + parentPath));
 

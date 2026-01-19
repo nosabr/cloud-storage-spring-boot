@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.cloudstorage1.entity.FileNode;
 import org.example.cloudstorage1.entity.FileType;
 import org.example.cloudstorage1.entity.User;
-import org.example.cloudstorage1.repository.FileMetadataRepository;
+import org.example.cloudstorage1.repository.FileNodeRepository;
 import org.example.cloudstorage1.service.storage.ObjectStorageService;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +18,7 @@ import java.util.List;
 @Transactional
 public class DeleteService {
 
-    private final FileMetadataRepository fileMetadataRepository;
+    private final FileNodeRepository fileNodeRepository;
     private final ObjectStorageService objectStorageService;
 
     public void deleteResource(User user, FileNode fileNode) {
@@ -32,7 +32,7 @@ public class DeleteService {
     public void deleteFile(User user, FileNode fileNode){
         String objectName = user.getUsername() + "/" + fileNode.getStorageKey();
         objectStorageService.deleteFile(objectName);
-        fileMetadataRepository.delete(fileNode);
+        fileNodeRepository.delete(fileNode);
     }
 
     public void deleteDirectory(User user, FileNode fileNode){
@@ -40,15 +40,15 @@ public class DeleteService {
     }
 
     private void deleteDirectoryAndAllChildren(User user, FileNode fileNode) {
-        List<FileNode> children = fileMetadataRepository.findAllByOwnerIdAndParentId(user.getId(), fileNode.getId());
+        List<FileNode> children = fileNodeRepository.findAllByOwnerIdAndParentId(user.getId(), fileNode.getId());
         for(FileNode child : children){
             if(child.getType() == FileType.FILE){
                 deleteFile(user,child);
-                fileMetadataRepository.delete(child);
+                fileNodeRepository.delete(child);
             } else {
                 deleteDirectoryAndAllChildren(user,child);
             }
         }
-        fileMetadataRepository.delete(fileNode);
+        fileNodeRepository.delete(fileNode);
     }
 }
