@@ -1,4 +1,4 @@
-package org.example.cloudstorage1.service;
+package org.example.cloudstorage1.service.resource;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +11,7 @@ import org.example.cloudstorage1.exception.ResourceConflictException;
 import org.example.cloudstorage1.exception.ResourceNotFoundException;
 import org.example.cloudstorage1.exception.StorageException;
 import org.example.cloudstorage1.repository.FileMetadataRepository;
+import org.example.cloudstorage1.service.DirectoryService;
 import org.example.cloudstorage1.service.storage.ObjectStorageService;
 import org.example.cloudstorage1.util.ResourceUtil;
 import org.example.cloudstorage1.util.ResourceValidationUtil;

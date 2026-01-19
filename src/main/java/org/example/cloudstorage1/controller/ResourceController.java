@@ -8,7 +8,8 @@ import org.example.cloudstorage1.entity.FileNode;
 import org.example.cloudstorage1.entity.User;
 import org.example.cloudstorage1.mapper.FileNodeMapper;
 import org.example.cloudstorage1.service.FileNodeService;
-import org.example.cloudstorage1.service.UploadService;
+import org.example.cloudstorage1.service.resource.DeleteService;
+import org.example.cloudstorage1.service.resource.UploadService;
 import org.example.cloudstorage1.service.auth.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,6 +28,7 @@ public class ResourceController {
     private final UserService userService;
     private final FileNodeMapper fileNodeMapper;
     private final UploadService uploadService;
+    private final DeleteService deleteService;
 
     @GetMapping
     public ResponseEntity<ResourceResponse> getResourceData(
@@ -37,7 +39,14 @@ public class ResourceController {
     }
 
     @DeleteMapping
-    public void deleteResource(){}
+    public ResponseEntity<?> deleteResource(
+            @RequestParam String path, Principal principal
+    ){
+        User user = userService.getUserByUsername(principal.getName());
+        FileNode fileNode = fileNodeService.getResource(user, path);
+        deleteService.deleteResource(user, fileNode);
+        return null;
+    }
 
     @PostMapping
     public ResponseEntity<List<ResourceResponse>> uploadResource(

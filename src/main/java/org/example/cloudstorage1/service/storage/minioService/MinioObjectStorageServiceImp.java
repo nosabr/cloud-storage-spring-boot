@@ -2,6 +2,7 @@ package org.example.cloudstorage1.service.storage.minioService;
 
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
+import io.minio.RemoveObjectArgs;
 import io.minio.errors.*;
 import lombok.RequiredArgsConstructor;
 import org.example.cloudstorage1.exception.StorageException;
@@ -41,7 +42,12 @@ public class MinioObjectStorageServiceImp implements ObjectStorageService {
 
     @Override
     public void deleteFile(String objectName) throws StorageException {
-
+        try{
+            minioClient.removeObject(
+                    RemoveObjectArgs.builder().bucket(bucketName).object(objectName).build());
+        } catch (Exception e){
+            throw new StorageException("Storage exception ", e);
+        }
     }
 
     @Override
