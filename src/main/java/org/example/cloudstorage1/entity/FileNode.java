@@ -57,5 +57,7 @@ public class FileNode {
     @Column(name = "updated_at",nullable = false, updatable = true)
     private Instant updatedAt;
 
-
+    public boolean isFile(){
+        return type.equals(FileType.FILE);
+    }
 }
