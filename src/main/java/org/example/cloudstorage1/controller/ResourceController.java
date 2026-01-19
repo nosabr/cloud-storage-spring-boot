@@ -12,9 +12,13 @@ import org.example.cloudstorage1.mapper.FileNodeMapper;
 import org.example.cloudstorage1.service.FileNodeService;
 import org.example.cloudstorage1.service.resource.DeleteService;
 import org.example.cloudstorage1.service.resource.DownloadService;
+import org.example.cloudstorage1.service.resource.MoveService;
 import org.example.cloudstorage1.service.resource.UploadService;
 import org.example.cloudstorage1.service.auth.UserService;
+import org.example.cloudstorage1.util.FolderPathUtil;
 import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,6 +38,7 @@ public class ResourceController {
     private final UploadService uploadService;
     private final DeleteService deleteService;
     private final DownloadService downloadService;
+    private final MoveService moveService;
 
     @GetMapping
     public ResponseEntity<ResourceResponse> getResourceData(
@@ -71,11 +76,24 @@ public class ResourceController {
         User user = userService.getUserByUsername(principal.getName());
         FileNode fileNode = fileNodeService.getResource(user, path);
         DownloadResponse downloadResponse= downloadService.download(user, fileNode);
-        return null;
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=\"" + downloadResponse.name() + "\"")
+                .body(downloadResponse.resource());
     }
 
     @GetMapping("/move")
-    public void moveResource(){}
+    public ResponseEntity<ResourceResponse> moveResource(
+            @RequestParam @NotBlank String from,
+            @RequestParam @NotBlank String to,
+            Principal principal
+    ){
+        User user = userService.getUserByUsername(principal.getName());
+        FileNode fileNode =  fileNodeService.getResource(user, from);
+        ResourceResponse resourceResponse = moveService.moveResource(user, fileNode, to);
+        return null;
+    }
 
     @GetMapping("/search")
     public void findResource(){}

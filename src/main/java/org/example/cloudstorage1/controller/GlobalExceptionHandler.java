@@ -3,10 +3,7 @@ package org.example.cloudstorage1.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.example.cloudstorage1.dto.ErrorMessage;
 import org.example.cloudstorage1.dto.ErrorResponse;
-import org.example.cloudstorage1.exception.ResourceConflictException;
-import org.example.cloudstorage1.exception.ResourceNotFoundException;
-import org.example.cloudstorage1.exception.InvalidResourceNameException;
-import org.example.cloudstorage1.exception.UsernameAlreadyExistsException;
+import org.example.cloudstorage1.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -58,6 +55,14 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.CONFLICT)
                 .body(new ErrorResponse(ErrorMessage.FOLDER_ALREADY_EXISTS));
+    }
+
+    @ExceptionHandler(InvalidPathException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidPathException() {
+        log.warn("InvalidPathException");
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse(ErrorMessage.INVALID_FORMAT));
     }
 
     @ExceptionHandler(ResourceNotFoundException.class)

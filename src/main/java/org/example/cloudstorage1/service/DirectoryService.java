@@ -51,7 +51,7 @@ public class DirectoryService {
         return fileNodeRepository.findAllByOwnerIdAndParentId(user.getId(), folder.getId());
     }
 
-    private Long getParentId(Long userId, String parentPath) {
+    public Long getParentId(Long userId, String parentPath) {
         if (parentPath.isEmpty()) {
             return null;
         }
