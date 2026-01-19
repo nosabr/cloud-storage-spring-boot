@@ -1,5 +1,6 @@
 package org.example.cloudstorage1.service.storage.minioService;
 
+import io.minio.GetObjectArgs;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
 import io.minio.RemoveObjectArgs;
@@ -24,7 +25,15 @@ public class MinioObjectStorageServiceImp implements ObjectStorageService {
 
     @Override
     public InputStream downloadFile(String objectName) throws StorageException {
-        return null;
+        try (InputStream stream = minioClient.getObject(
+                GetObjectArgs.builder()
+                        .bucket("my-bucketname")
+                        .object("my-objectname")
+                        .build())) {
+            return stream;
+        } catch (Exception e){
+            throw new StorageException("Storage exception ", e);
+        }
     }
 
     @Override

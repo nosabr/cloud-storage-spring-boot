@@ -1,16 +1,20 @@
 package org.example.cloudstorage1.controller;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.cloudstorage1.dto.DownloadResponse;
 import org.example.cloudstorage1.dto.ResourceResponse;
 import org.example.cloudstorage1.entity.FileNode;
 import org.example.cloudstorage1.entity.User;
 import org.example.cloudstorage1.mapper.FileNodeMapper;
 import org.example.cloudstorage1.service.FileNodeService;
 import org.example.cloudstorage1.service.resource.DeleteService;
+import org.example.cloudstorage1.service.resource.DownloadService;
 import org.example.cloudstorage1.service.resource.UploadService;
 import org.example.cloudstorage1.service.auth.UserService;
+import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -29,6 +33,7 @@ public class ResourceController {
     private final FileNodeMapper fileNodeMapper;
     private final UploadService uploadService;
     private final DeleteService deleteService;
+    private final DownloadService downloadService;
 
     @GetMapping
     public ResponseEntity<ResourceResponse> getResourceData(
@@ -40,12 +45,12 @@ public class ResourceController {
 
     @DeleteMapping
     public ResponseEntity<?> deleteResource(
-            @RequestParam String path, Principal principal
+            @RequestParam @NotBlank String path, Principal principal
     ){
         User user = userService.getUserByUsername(principal.getName());
         FileNode fileNode = fileNodeService.getResource(user, path);
         deleteService.deleteResource(user, fileNode);
-        return null;
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping
@@ -60,7 +65,14 @@ public class ResourceController {
     }
 
     @GetMapping("/download")
-    public void downloadResource(){}
+    public ResponseEntity<Resource> downloadResource(
+            @RequestParam @NotBlank String path, Principal principal
+    ){
+        User user = userService.getUserByUsername(principal.getName());
+        FileNode fileNode = fileNodeService.getResource(user, path);
+        DownloadResponse downloadResponse= downloadService.download(user, fileNode);
+        return null;
+    }
 
     @GetMapping("/move")
     public void moveResource(){}
