@@ -7,8 +7,12 @@ import org.example.cloudstorage1.dto.ResourceResponse;
 import org.example.cloudstorage1.entity.FileNode;
 import org.example.cloudstorage1.entity.User;
 import org.example.cloudstorage1.exception.InvalidPathException;
+import org.example.cloudstorage1.exception.ResourceNotFoundException;
+import org.example.cloudstorage1.repository.FileNodeRepository;
 import org.example.cloudstorage1.service.DirectoryService;
+import org.example.cloudstorage1.service.FileNodeService;
 import org.example.cloudstorage1.util.ResourcePathUtil;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,16 +20,27 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class MoveService {
     private final DirectoryService directoryService;
+    private final FileNodeService fileNodeService;
+    private final FileNodeRepository fileNodeRepository;
 
-    public ResourceResponse moveResource(User user, FileNode fileNode, String to) {
-        String fromParentPath = ResourcePathUtil.getParentPath(fileNode.getPath());
-        String movingParentPath = ResourcePathUtil.getParentPath(to);
-        Long movingParentId = directoryService.getParentId(user.getId(), toParentPath);
-        if(movingParentPath.startsWith(fromParentPath)){
+    public FileNode moveResource(User user, FileNode fileNode, String to) {
+        String targetParentPath = ResourcePathUtil.getParentPath(to);
+        if(!fileNode.isFile() && targetParentPath.startsWith(fileNode.getPath())){
             throw new InvalidPathException("Cannot move folder into its own subfolder");
         }
-        return null;
+        String newName = ResourcePathUtil.getName(to);
+        String newPath = to;
+        Long newParentId = targetParentPath.isEmpty() ? null :
+                fileNodeRepository.findByOwnerIdAndPath(user.getId(), targetParentPath)
+                .orElseThrow(() -> new ResourceNotFoundException("Resource Not found" + targetParentPath))
+                .getId();
+        fileNode.setName(newName);
+        fileNode.setPath(newPath);
+        fileNode.setParentId(newParentId);
+        fileNodeRepository.save(fileNode);
+        fileNodeService.updateAllChildren(fileNode);
+        return fileNode;
     }
-
-
 }
+
+

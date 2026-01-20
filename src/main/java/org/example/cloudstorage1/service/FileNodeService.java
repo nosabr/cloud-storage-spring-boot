@@ -8,6 +8,8 @@ import org.example.cloudstorage1.exception.ResourceNotFoundException;
 import org.example.cloudstorage1.repository.FileNodeRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -19,5 +21,22 @@ public class FileNodeService {
                 .orElseThrow(() -> new ResourceNotFoundException("Ресурс не найден " + fullPath));
     }
 
+    public List<FileNode> findByName(User user, String name){
+        return fileNodeRepository.findByOwnerIdAndName(user.getId(), name);
+    }
 
+    public void updateAllChildren(FileNode fileNode) {
+        if(fileNode.isFile()){
+            return;
+        }
+        List<FileNode> children = fileNodeRepository.findAllByOwnerIdAndParentId(
+                fileNode.getOwnerId(), fileNode.getId());
+        String path = fileNode.getPath();
+        for(FileNode child : children){
+            String newPath = path + child.getName() + (child.isFile() ? "" : "/");
+            child.setPath(newPath);
+            fileNodeRepository.save(child);
+            updateAllChildren(child);
+        }
+    }
 }

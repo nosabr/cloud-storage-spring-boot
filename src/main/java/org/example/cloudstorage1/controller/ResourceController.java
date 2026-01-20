@@ -91,12 +91,19 @@ public class ResourceController {
     ){
         User user = userService.getUserByUsername(principal.getName());
         FileNode fileNode =  fileNodeService.getResource(user, from);
-        ResourceResponse resourceResponse = moveService.moveResource(user, fileNode, to);
-        return null;
+        FileNode movedfileNode = moveService.moveResource(user, fileNode, to);
+        return ResponseEntity.ok(fileNodeMapper.toResponse(movedfileNode));
     }
 
     @GetMapping("/search")
-    public void findResource(){}
+    public ResponseEntity<List<ResourceResponse>> findResource(
+            @RequestParam @NotBlank String query,
+            Principal principal
+    ){
+        User user = userService.getUserByUsername(principal.getName());
+        List<FileNode> fileNodes = fileNodeService.findByName(user, query);
+        return  ResponseEntity.ok(fileNodeMapper.toResponseList(fileNodes));
+    }
 
 
 }

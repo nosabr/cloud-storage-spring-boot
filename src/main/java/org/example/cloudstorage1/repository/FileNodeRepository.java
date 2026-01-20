@@ -10,5 +10,5 @@ public interface FileNodeRepository extends JpaRepository<FileNode, Long> {
     Optional<FileNode> findByOwnerIdAndPath(Long userId, String path);
     List<FileNode> findAllByOwnerIdAndParentId(Long userId, Long parentId);
     Optional<FileNode> findByOwnerIdAndParentIdAndName(Long ownerId, Long currentParentId, String name);
-    void deleteAllByParentId(Long parentId);
+    List<FileNode> findByOwnerIdAndName(Long ownerId, String name);
 }
