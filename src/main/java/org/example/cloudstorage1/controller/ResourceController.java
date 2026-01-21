@@ -60,12 +60,12 @@ public class ResourceController {
 
     @PostMapping
     public ResponseEntity<List<ResourceResponse>> uploadResource(
-            @RequestParam @Pattern(regexp = ".+/") String path, List<MultipartFile> files,
+            @RequestParam @Pattern(regexp = ".+/") String path, @RequestParam("object") List<MultipartFile> object,
             Principal principal
     ) throws IOException {
         User user = userService.getUserByUsername(principal.getName());
         FileNode parentFileNode = fileNodeService.getResource(user, path);
-        List<FileNode> fileNodes = uploadService.upload(parentFileNode, files, user);
+        List<FileNode> fileNodes = uploadService.upload(parentFileNode, object, user);
         return ResponseEntity.ok(fileNodeMapper.toResponseList(fileNodes));
     }
 

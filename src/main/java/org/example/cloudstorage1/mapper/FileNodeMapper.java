@@ -12,7 +12,7 @@ public class FileNodeMapper {
     public ResourceResponse toResponse(FileNode fileNode){
         return new ResourceResponse(
                 FolderPathUtil.getParentPath(fileNode.getPath()),
-                fileNode.getName(),
+                fileNode.isFile() ? fileNode.getName() : fileNode.getName() + "/",
                 fileNode.getSize(),
                 fileNode.getType()
         );
