@@ -42,7 +42,7 @@ public class AuthController {
         }
 
         User user = userService.signUp(request);
-
+        authService.signIn(new LoginRequest(request.username(), request.password()));
         UserResponse response = new UserResponse(user.getUsername());
         log.info("sign-up request, User created: '{}'", response);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
