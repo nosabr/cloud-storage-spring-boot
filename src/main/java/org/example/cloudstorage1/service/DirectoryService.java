@@ -21,26 +21,26 @@ public class DirectoryService {
 
     private final FileNodeRepository fileNodeRepository;
 
-    public FileNode createDirectory(User user, String fullPath) {
-        String parentPath = FolderPathUtil.getParentPath(fullPath);
-        String folderName = FolderPathUtil.getFolderName(fullPath);
-        FolderValidationUtil.validateFolderName(folderName);
-        if (fileNodeRepository.findByOwnerIdAndPath(user.getId(), fullPath).isPresent()) {
-            log.warn("Folder already exists for user: {}", fullPath);
-            throw new ResourceConflictException("The path already exists!");
-        }
-        Long parentId = getParentId(user.getId(), parentPath);
+        public FileNode createDirectory(User user, String fullPath) {
+            String parentPath = FolderPathUtil.getParentPath(fullPath);
+            String folderName = FolderPathUtil.getFolderName(fullPath);
+            FolderValidationUtil.validateFolderName(folderName);
+            if (fileNodeRepository.findByOwnerIdAndPath(user.getId(), fullPath).isPresent()) {
+                log.warn("Folder already exists for user: {}", fullPath);
+                throw new ResourceConflictException("The path already exists!");
+            }
+            Long parentId = getParentId(user.getId(), parentPath);
 
-        FileNode fileNode = FileNode.builder()
-                .name(folderName)
-                .type(FileType.DIRECTORY)
-                .parentId(parentId)
-                .path(fullPath)
-                .ownerId(user.getId())
-                .build();
-        log.info("Created repository" + fileNode);
-        return fileNodeRepository.save(fileNode);
-    }
+            FileNode fileNode = FileNode.builder()
+                    .name(folderName)
+                    .type(FileType.DIRECTORY)
+                    .parentId(parentId)
+                    .path(fullPath)
+                    .ownerId(user.getId())
+                    .build();
+            log.info("Created repository" + fileNode);
+            return fileNodeRepository.save(fileNode);
+        }
 
     public List<FileNode> getDirectoryContent(User user, String fullPath) {
         if(fullPath == null || fullPath.isEmpty()){

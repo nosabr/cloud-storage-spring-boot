@@ -18,10 +18,10 @@ spring:
   jpa:
     hibernate:
       ddl-auto: validate
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
-        format_sql: true
+        format_sql: false
         dialect: org.hibernate.dialect.PostgreSQLDialect
   liquibase:
     enabled: true
@@ -37,12 +37,17 @@ storage:
 
 logging:
   level:
-    root: INFO
-    org.example.cloudstorage1: INFO
-    org.springframework: WARN
-    org.hibernate.sql: WARN
+    root: WARN  # Изменил с INFO на WARN
+    org.example.cloudstorage1: INFO  # Только твои логи
+    org.springframework.web: ERROR  # Минимум от Spring Web
+    org.springframework.security: WARN
+    org.hibernate: ERROR  # Полностью скрываем Hibernate
+    org.hibernate.SQL: ERROR  # Скрываем SQL
+    org.hibernate.type.descriptor.sql.BasicBinder: ERROR  # Скрываем параметры
+    liquibase: WARN  # Минимизируем Liquibase
+  pattern:
+    console: "%clr(%d{HH:mm:ss.SSS}){faint} %clr(%-5level) %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n"
   file:
     name: logs/application.log
-  pattern:
-    file: "%d{yyyy-MM-dd HH:mm:ss} %-5level [%thread] %logger{36} - %msg%n"
+    pattern: "%d{yyyy-MM-dd HH:mm:ss} %-5level [%thread] %logger{36} - %msg%n"
 

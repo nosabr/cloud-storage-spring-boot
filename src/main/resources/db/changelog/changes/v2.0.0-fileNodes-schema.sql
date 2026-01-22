@@ -1,4 +1,4 @@
-
+--changeset sabr:003-create-file-node-table
 CREATE TABLE file_node (
                            id BIGSERIAL PRIMARY KEY,
                            name VARCHAR(255) NOT NULL,
@@ -20,11 +20,13 @@ CREATE TABLE file_node (
                            CONSTRAINT fk_file_node_owner
                                FOREIGN KEY (owner_id)
                                    REFERENCES users(id)
-                                   ON DELETE CASCADE
+                                   ON DELETE CASCADE,
+
+                           CONSTRAINT uk_owner_path UNIQUE (owner_id, path)
 );
 
 --changeset sabr:003-create-file-node-indexes
-CREATE INDEX idx_parent_id ON file_no   de(parent_id);
+CREATE INDEX idx_parent_id ON file_node(parent_id);
 CREATE INDEX idx_owner_id ON file_node(owner_id);
 CREATE INDEX idx_owner_parent ON file_node(owner_id, parent_id);
 

@@ -18,6 +18,7 @@ import org.example.cloudstorage1.service.auth.UserService;
 import org.example.cloudstorage1.util.FolderPathUtil;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -60,13 +61,16 @@ public class ResourceController {
 
     @PostMapping
     public ResponseEntity<List<ResourceResponse>> uploadResource(
-            @RequestParam @Pattern(regexp = ".+/") String path, @RequestParam("object") List<MultipartFile> object,
+            @RequestParam (defaultValue = "") String path, @RequestParam("object") List<MultipartFile> object,
             Principal principal
     ) throws IOException {
         User user = userService.getUserByUsername(principal.getName());
-        FileNode parentFileNode = fileNodeService.getResource(user, path);
-        List<FileNode> fileNodes = uploadService.upload(parentFileNode, object, user);
-        return ResponseEntity.ok(fileNodeMapper.toResponseList(fileNodes));
+        if (!path.isEmpty()) {
+            fileNodeService.getResource(user, path);
+        }
+        log.info("uploading file to path {} file {}", user.getUsername(), path, object);
+        List<FileNode> fileNodes = uploadService.upload(path, object, user);
+        return ResponseEntity.status(HttpStatus.CREATED).body(fileNodeMapper.toResponseList(fileNodes));
     }
 
     @GetMapping("/download")

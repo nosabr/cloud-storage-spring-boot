@@ -11,19 +11,5 @@ CREATE TABLE users (
 -- Индексы для быстрого поиска
 CREATE INDEX idx_users_username ON users(username);
 
--- Тестовый пользователь (пароль: password123)
-INSERT INTO users (username, password, role)
-VALUES (
-           'admin',
-           '$2a$10$XptfskVPRdFDhVBXLY3iZu9gNKR.X.0LlUKIkJfhMDq5FPIlMYqwK',
-           'ROLE_ADMIN'
-       );
--- Тестовый пользователь (пароль: password123)
-INSERT INTO users (username, password, role)
-VALUES (
-           'user',
-           '$2a$10$XptfskVPRdFDhVBXLY3iZu9gNKR.X.0LlUKIkJfhMDq5FPIlMYqwK',
-           'ROLE_ADMIN'
-       );
 
 
