@@ -48,6 +48,8 @@ services:
         condition: service_healthy
       minio:
         condition: service_healthy
+      redis:
+        condition: service_healthy
 
   frontend:
     image: cloud-storage-frontend:latest
@@ -57,6 +59,22 @@ services:
     depends_on:
       - backend
 
+  redis:
+    image: redis:7-alpine
+    container_name: cloud-storage-redis  # добавь имя для удобства
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+
 volumes:
   postgres_data:
   minio_data:
+  redis-data:

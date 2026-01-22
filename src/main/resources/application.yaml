@@ -4,8 +4,7 @@ server:
     multipart:
       max-file-size: 1MB      # Максимальный размер одного файла
       max-request-size: 10MB
-    session:
-      timeout: 30m
+
 
 spring:
   application:
@@ -26,6 +25,15 @@ spring:
   liquibase:
     enabled: true
     change-log: classpath:/db/changelog/master.yaml
+  data:
+    redis:
+      host: localhost
+      port: 6379
+  session:
+    store-type: redis
+    timeout: 30m
+    redis:
+      namespace: spring:session
 
 storage:
   bucket-name: cloud-storage-files
