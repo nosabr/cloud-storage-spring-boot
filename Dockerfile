@@ -8,6 +8,8 @@ COPY gradle gradle
 COPY build.gradle .
 COPY settings.gradle .
 
+RUN chmod +x gradlew
+
 # Загружаем зависимости (кешируется если не меняется build.gradle)
 RUN ./gradlew dependencies --no-daemon
 

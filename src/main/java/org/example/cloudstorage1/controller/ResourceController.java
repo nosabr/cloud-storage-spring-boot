@@ -68,7 +68,7 @@ public class ResourceController {
         if (!path.isEmpty()) {
             fileNodeService.getResource(user, path);
         }
-        log.info("uploading file to path {} file {}", user.getUsername(), path, object);
+        log.info("uploading file to path {} file {}", path, object);
         List<FileNode> fileNodes = uploadService.upload(path, object, user);
         return ResponseEntity.status(HttpStatus.CREATED).body(fileNodeMapper.toResponseList(fileNodes));
     }

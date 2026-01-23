@@ -10,7 +10,7 @@ spring:
   application:
     name: cloud-storage-1
   datasource:
-    url: jdbc:postgresql://localhost:5432/cloud_storage
+    url: jdbc:postgresql://postgres:5432/cloud_storage
     username: user
     password: password
     driver-class-name: org.postgresql.Driver
@@ -27,7 +27,7 @@ spring:
     change-log: classpath:/db/changelog/master.yaml
   data:
     redis:
-      host: localhost
+      host: redis
       port: 6379
   session:
     store-type: redis
@@ -38,7 +38,7 @@ spring:
 storage:
   bucket-name: cloud-storage-files
   minio:
-    endpoint: http://localhost:9000
+    endpoint: http://minio:9000
     access-key: minioadmin
     secret-key: minioadmin
 

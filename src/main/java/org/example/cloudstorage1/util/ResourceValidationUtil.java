@@ -3,8 +3,7 @@ package org.example.cloudstorage1.util;
 import org.example.cloudstorage1.exception.InvalidResourceNameException;
 
 public abstract class ResourceValidationUtil {
-    public static int MAX_FILENAME_LENGTH = 25;
-
+    public static int MAX_FILENAME_LENGTH = 50;
 
     public static void validateFileName(String fileName) {
 
