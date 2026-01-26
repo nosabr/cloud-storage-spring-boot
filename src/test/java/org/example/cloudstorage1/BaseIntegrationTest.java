@@ -14,6 +14,7 @@ public abstract class BaseIntegrationTest {
 
     private static final PostgreSQLContainer<?> postgres;
     private static final GenericContainer<?> minio;
+    private static final GenericContainer<?> redis;
 
     static {
         postgres = new PostgreSQLContainer<>("postgres:15")
@@ -28,19 +29,29 @@ public abstract class BaseIntegrationTest {
                 .withEnv("MINIO_ROOT_PASSWORD", "minioadmin")
                 .withCommand("server /data");
         minio.start();
+
+        redis = new GenericContainer<>(DockerImageName.parse("redis:7-alpine"))
+                .withExposedPorts(6379);
+        redis.start();
     }
 
     @DynamicPropertySource
     static void configureProperties(DynamicPropertyRegistry registry) {
+        // PostgreSQL
         registry.add("spring.datasource.url", postgres::getJdbcUrl);
         registry.add("spring.datasource.username", postgres::getUsername);
         registry.add("spring.datasource.password", postgres::getPassword);
 
+        // MinIO
         registry.add("storage.minio.endpoint", () ->
                 "http://" + minio.getHost() + ":" + minio.getMappedPort(9000));
         registry.add("storage.access-key", () -> "minioadmin");
         registry.add("storage.secret-key", () -> "minioadmin");
         registry.add("storage.bucket-name", () -> "test-bucket");
+
+        // Redis
+        registry.add("spring.data.redis.host", redis::getHost);
+        registry.add("spring.data.redis.port", () -> redis.getMappedPort(6379));
 
         createBucket();
     }

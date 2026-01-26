@@ -37,8 +37,8 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleBadCredentialsException() {
         log.warn("BadCredentialsException");
         return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(new ErrorResponse(ErrorMessage.INVALID_FORMAT));
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(new ErrorResponse(ErrorMessage.WRONG_LOGIN_OR_PASSWORD));
     }
 
     @ExceptionHandler(UsernameAlreadyExistsException.class)

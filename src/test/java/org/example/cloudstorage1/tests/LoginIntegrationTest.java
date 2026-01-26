@@ -1,152 +1,146 @@
 package org.example.cloudstorage1.tests;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.cloudstorage1.BaseIntegrationTest;
-import org.example.cloudstorage1.service.auth.UserService;
-import org.example.cloudstorage1.dto.ErrorResponse;
 import org.example.cloudstorage1.dto.LoginRequest;
 import org.example.cloudstorage1.dto.SignupRequest;
-import org.example.cloudstorage1.dto.UserResponse;
 import org.example.cloudstorage1.repository.UserRepository;
-import org.junit.jupiter.api.Assertions;
+import org.example.cloudstorage1.service.auth.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.*;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import java.util.List;
-import java.util.Objects;
+import jakarta.servlet.http.Cookie;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@AutoConfigureMockMvc
 @Testcontainers
 public class LoginIntegrationTest extends BaseIntegrationTest {
 
     @Autowired
-    private TestRestTemplate testRestTemplate;
-    @Autowired
-    private UserRepository userRepository;
+    private MockMvc mockMvc;
+
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
     @BeforeEach
-    void createUser(){
+    void cleanup() {
         userRepository.deleteAll();
         userService.signUp(new SignupRequest("test", "test"));
     }
 
     @Test
-    void shouldLogin() {
-        LoginRequest request = new LoginRequest("test","test");
-        ResponseEntity<UserResponse> response = testRestTemplate.
-                postForEntity("/api/auth/sign-in",
-                        request,
-                        UserResponse.class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody() != null ? response.getBody().username() : null).isEqualTo("test");
-        assertThat(response.getHeaders().get("Set-Cookie")).isNotNull();
+    void shouldLoginWithValidCredentials() throws Exception {
+        LoginRequest request = new LoginRequest("test", "test");
+
+        mockMvc.perform(post("/api/auth/sign-in")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.username").value("test"));
     }
 
     @Test
-    void shouldRejectLogin() {
-        LoginRequest request = new LoginRequest("test1","test");
-        ResponseEntity<UserResponse> response = testRestTemplate.
-                postForEntity("/api/auth/sign-in",
-                        request,
-                        UserResponse.class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
-    }
-
-    @Test
-    void shouldRejectAccessWithoutSession() {
-        ResponseEntity<UserResponse> response = testRestTemplate.
-                getForEntity("/api/user/me",
-                        UserResponse.class);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
-    }
-
-    @Test
-    void shouldRejectLoginWithWrongPassword() {
+    void shouldRejectInvalidPassword() throws Exception {
         LoginRequest request = new LoginRequest("test", "wrongpassword");
 
-        ResponseEntity<ErrorResponse> response = testRestTemplate.postForEntity(
-                "/api/auth/sign-in",
-                request,
-                ErrorResponse.class
-        );
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.UNAUTHORIZED);
+        mockMvc.perform(post("/api/auth/sign-in")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
-    void shouldRejectLoginWithEmptyUsername() {
+    void shouldRejectNonExistentUser() throws Exception {
+        LoginRequest request = new LoginRequest("nonexistent", "test");
+
+        mockMvc.perform(post("/api/auth/sign-in")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void shouldAccessProtectedEndpointAfterLogin() throws Exception {
+        LoginRequest loginRequest = new LoginRequest("test", "test");
+
+        // 1. Логинимся и получаем SESSION cookie
+        MvcResult loginResult = mockMvc.perform(post("/api/auth/sign-in")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(loginRequest)))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        // 2. Извлекаем SESSION cookie из ответа
+        Cookie sessionCookie = loginResult.getResponse().getCookie("SESSION");
+
+        // 3. Используем SESSION cookie для доступа к защищённому эндпоинту
+        mockMvc.perform(get("/api/user/me")
+                        .cookie(sessionCookie))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.username").value("test"));
+    }
+
+    @Test
+    void shouldRejectAccessWithoutLogin() throws Exception {
+        mockMvc.perform(get("/api/user/me"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void shouldRejectBlankUsername() throws Exception {
         LoginRequest request = new LoginRequest("", "test");
-        ResponseEntity<ErrorResponse> response = testRestTemplate.postForEntity(
-                "/api/auth/sign-in",
-                request,
-                ErrorResponse.class
-        );
 
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        mockMvc.perform(post("/api/auth/sign-in")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
-    void shouldRejectLoginWithEmptyPassword() {
+    void shouldRejectNullUsername() throws Exception {
+        LoginRequest request = new LoginRequest(null, "test");
+
+        mockMvc.perform(post("/api/auth/sign-in")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldRejectBlankPassword() throws Exception {
         LoginRequest request = new LoginRequest("test", "");
 
-        ResponseEntity<ErrorResponse> response = testRestTemplate.postForEntity(
-                "/api/auth/sign-in",
-                request,
-                ErrorResponse.class
-        );
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+        mockMvc.perform(post("/api/auth/sign-in")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
-    void shouldAccessProtectedEndpointAfterLogin() {
-        // 1. Логинимся
-        LoginRequest loginRequest = new LoginRequest("test", "test");
-        ResponseEntity<UserResponse> loginResponse = testRestTemplate.postForEntity(
-                "/api/auth/sign-in",
-                loginRequest,
-                UserResponse.class
-        );
+    void shouldRejectNullPassword() throws Exception {
+        LoginRequest request = new LoginRequest("test", null);
 
-        assertThat(loginResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
-
-        // 2. Извлекаем cookie
-        List<String> cookies = loginResponse.getHeaders().get(HttpHeaders.SET_COOKIE);
-        assertThat(cookies).isNotNull();
-
-        Assertions.assertNotNull(cookies);
-        String sessionCookie = cookies.stream()
-                .filter(cookie -> cookie.startsWith("JSESSIONID"))
-                .findFirst()
-                .orElseThrow(() -> new AssertionError("JSESSIONID not found"));
-
-        // 3. Создаём headers с cookie
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.COOKIE, sessionCookie);
-        HttpEntity<Void> requestEntity = new HttpEntity<>(headers);
-
-        // 4. Делаем запрос на защищённый эндпоинт
-        ResponseEntity<UserResponse> meResponse = testRestTemplate.exchange(
-                "/api/user/me",
-                HttpMethod.GET,
-                requestEntity,
-                UserResponse.class
-        );
-
-        // 5. Проверяем результат
-        assertThat(meResponse.getStatusCode()).isEqualTo(HttpStatus.OK);
-        UserResponse user = Objects.requireNonNull(meResponse.getBody());
-        assertThat(user.username()).isEqualTo("test");
+        mockMvc.perform(post("/api/auth/sign-in")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
     }
-
 }
