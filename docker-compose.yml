@@ -8,6 +8,8 @@ services:
       POSTGRES_PASSWORD: password
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U user -d cloud_storage"]
       interval: 10s
@@ -23,8 +25,24 @@ services:
       MINIO_ROOT_PASSWORD: minioadmin
     volumes:
       - minio_data:/data
+    networks:
+      - app-network
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: cloud-storage-redis
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -38,6 +56,8 @@ services:
       - "8080:8080"
     environment:
       SPRING_PROFILES_ACTIVE: docker
+    networks:
+      - app-network
     depends_on:
       postgres:
         condition: service_healthy
@@ -47,27 +67,20 @@ services:
         condition: service_healthy
 
   frontend:
-    image: cloud-storage-frontend:latest
+    image: cloud-storage-frontend:latest  # Используем готовый образ
     container_name: cloud-storage-frontend
     ports:
-      - "3000:80"
+      - "3000:80"  # 3000 снаружи -> 80 внутри (nginx)
+    networks:
+      - app-network
     depends_on:
       - backend
-
-  redis:
-    image: redis:7-alpine
-    container_name: cloud-storage-redis
-    volumes:
-      - redis-data:/data
-    command: redis-server --appendonly yes
-    healthcheck:
-      test: [ "CMD", "redis-cli", "ping" ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
 
 volumes:
   postgres_data:
   minio_data:
   redis-data:
+
+networks:
+  app-network:
+    driver: bridge

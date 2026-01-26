@@ -11,4 +11,5 @@ public interface FileNodeRepository extends JpaRepository<FileNode, Long> {
     List<FileNode> findAllByOwnerIdAndParentId(Long userId, Long parentId);
     Optional<FileNode> findByOwnerIdAndParentIdAndName(Long ownerId, Long currentParentId, String name);
     List<FileNode> findByOwnerIdAndName(Long ownerId, String name);
+    List<FileNode> findByOwnerIdAndNameContainingIgnoreCase(Long ownerId, String name);
 }

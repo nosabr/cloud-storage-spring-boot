@@ -22,7 +22,7 @@ public class FileNodeService {
     }
 
     public List<FileNode> findByName(User user, String name){
-        return fileNodeRepository.findByOwnerIdAndName(user.getId(), name);
+        return fileNodeRepository.findByOwnerIdAndNameContainingIgnoreCase(user.getId(), name);
     }
 
     public void updateAllChildren(FileNode fileNode) {
